@@ -18,7 +18,7 @@ Statuses used: `Not started` · `In progress` · `Blocked` · `Completed` · `De
 | 1 | Configure ESLint | Completed | 2026-07-15 | eslint.config.mjs | `npm run lint` passed | pending | Prettier not yet added — deferred to a later Phase 1 step |
 | 1 | Initial design system (colors/type/spacing) | Not started | | | | | Deferred to Phase 2 |
 | 1 | One simple test page running locally | Completed | 2026-07-15 | src/app/page.tsx, src/app/layout.tsx | `curl localhost:3000` returned HTTP 200 | pending | Original placeholder page (not default Vercel template) |
-| 1 | Git init + first commit | In progress | 2026-07-15 | | | | Repo already existed; committing scaffold now |
+| 1 | Git init + first commit | Completed | 2026-07-15 | 16 files (see commit) | build/lint/typecheck all passed | 99b75ef | Repo already existed; this is the first app-code commit |
 | 2 | Header, mobile nav, footer | Not started | | | | | |
 | 2 | Homepage skeleton | Not started | | | | | |
 | 3 | MySQL dev database + Prisma setup | Not started | | | | | |
@@ -33,10 +33,10 @@ Statuses used: `Not started` · `In progress` · `Blocked` · `Completed` · `De
 
 ## End-of-session summary (2026-07-15)
 
-1. **Completed:** Phase 0 discovery — all 33 questions answered, naming clarified (AKMI Untirta), navigation IA confirmed, Perpustakaan module scoped into MVP. Four planning documents created.
-2. **Files changed:** `docs/PROJECT-VISION.md`, `docs/FEATURES.md`, `docs/DECISIONS.md`, `docs/PROGRESS.md` (all new).
-3. **Commands run:** `git status`, `mkdir -p docs` (no app code yet).
-4. **Tests:** Not applicable — no code written yet, documentation only.
-5. **Unresolved:** Org's exact vision/mission wording still placeholder pending your edit; exact social media handles pending; domain/Hostinger DB not yet created (expected — comes later).
-6. **Next single recommended step:** Phase 1, Step 1 — install/verify the Next.js project tooling and create the actual project skeleton on your machine. (To be given as one small action after you review the docs above.)
-7. **Suggested commit message:** `docs: add Phase 0 project charter, feature backlog, decisions log, and progress tracker`
+1. **Completed:** Phase 0 discovery (all 33 questions, naming clarified, nav IA confirmed) and the start of Phase 1 — a working Next.js + TypeScript + Tailwind v4 + ESLint project, verified with a type check, lint, production build, and a live dev-server smoke test (HTTP 200).
+2. **Files changed:** 4 new docs in Phase 0; then `package.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, `.gitignore`, `AGENTS.md`, `CLAUDE.md`, `src/app/*`, plus doc updates.
+3. **Commands run:** `create-next-app`, `npm install`, `npx tsc --noEmit`, `npm run lint`, `npm run build`, `npm run dev` (smoke test then stopped), `npx next telemetry disable`.
+4. **Tests:** Type check ✅, lint ✅, production build ✅, dev server responded HTTP 200 ✅.
+5. **Unresolved:** Org's exact vision/mission wording still placeholder; social handles pending; domain/Hostinger DB not yet created (expected, comes later); Prettier not yet configured; real logo file not yet added to the project.
+6. **Next single recommended step:** Have the user pull this branch locally and run `npm install` + `npm run dev` to see the placeholder page in their own browser — confirming the "build here, view there" workflow works end-to-end — before continuing to Phase 1's design-system step.
+7. **Commits:** `502aead` (Phase 0 docs), `0815aca` (logo description), `99b75ef` (Next.js scaffold).
