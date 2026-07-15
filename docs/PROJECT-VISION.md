@@ -46,7 +46,7 @@ This is a **default we recommend**, not a hard rule — you can override it late
 
 - **Primary color:** Emerald green (an original palette will be designed around this — not copied from the reference site's colors).
 - **Tone:** Youthful but rich/premium — not childish, not overly corporate.
-- **Logo:** You have an existing logo file; it will be added to the project once we reach the design-system step (Phase 1/2).
+- **Logo:** You have an existing logo file (shared 2026-07-15): a shield/badge shape, gradient green background, white crescent moon with a small Arabic calligraphic mark, "AKMI UNTIRTA" in white serif type. The actual image file still needs to be copied into the project — this will happen at the design-system step (Phase 2), where you'll drag the file into the project folder in VS Code.
 - **Style references:** Functional structure inspired by ldksyah.id (features/IA only, per the IP rule) — no other visual references given.
 
 ## 6. Governance and roles at launch
