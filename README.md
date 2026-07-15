@@ -9,4 +9,27 @@ This project is being built step by step. See the `docs/` folder for planning do
 - [`docs/DECISIONS.md`](docs/DECISIONS.md) — decisions and assumptions log
 - [`docs/PROGRESS.md`](docs/PROGRESS.md) — build progress tracker
 
-No application code exists yet — the project is currently in Phase 0 (discovery and planning).
+## Tech stack
+
+Next.js (App Router) · TypeScript · Tailwind CSS · MySQL (planned, Phase 3) · Prisma (planned) · Auth.js (planned)
+
+## Getting started locally
+
+```
+npm install
+npm run dev
+```
+
+Then open http://localhost:3000 in your browser.
+
+## Useful commands
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start the local development server |
+| `npm run build` | Create a production build |
+| `npm run start` | Run the production build locally |
+| `npm run lint` | Check code style/quality with ESLint |
+| `npx tsc --noEmit` | Check for TypeScript type errors |
+
+Project status: Phase 1 (local foundation) in progress — see `docs/PROGRESS.md`.
