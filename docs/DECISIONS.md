@@ -4,6 +4,18 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-15 — Phase 3 minimum schema created and migrated
+
+- **DECISION.** You confirmed the proposed minimum schema (`User`, `Account`, `Session`, `VerificationToken`, role as a simple enum on `User`). Schema written, formatted, validated, and migrated successfully against a live test database — verified the actual MySQL table structure with `DESCRIBE users`.
+- **DISCOVERY.** Prisma 7 requires application code to construct `PrismaClient` with an explicit **driver adapter** rather than just reading `DATABASE_URL` automatically — a real breaking change from earlier Prisma versions (consistent with this project's own `AGENTS.md` warning to check installed docs rather than trust training data). Installed `@prisma/adapter-mariadb` (supports both MySQL and MariaDB) and wired it into `src/lib/prisma.ts`.
+- **DECISION.** Added `postinstall: prisma generate` to `package.json` so the gitignored generated client (`src/generated/prisma`) is automatically rebuilt after every `npm install` — without this, the app would fail to build on any fresh clone/pull.
+- **DECISION.** Added `bcryptjs` (pure-JS password hashing, chosen over native `bcrypt` specifically to avoid native-module build failures on Windows) and `tsx` (to run the TypeScript seed script directly).
+- **DECISION.** Seed script (`prisma/seed.ts`) creates one sample Super Admin (`admin@akmiuntirta.test` / `ChangeMe123!`) — a clearly fake, committed-on-purpose placeholder for local development only, never meant for production use.
+- **KNOWN ISSUE (unresolved, low priority).** Prisma Studio (`npx prisma studio`) threw a schema-metadata-loading error (`a.sort is not a function`) when tested against **MariaDB** (used as a stand-in database in this cloud session, since genuine MySQL Server couldn't be installed alongside MariaDB in this container due to a package conflict). This may be a MariaDB-vs-real-MySQL quirk specific to this test environment — the user has genuine MySQL 8.0.46 installed locally, so this needs verification on their machine before we treat it as a real bug to fix.
+- Verified end-to-end: schema validate → migrate → generate client → seed → direct SQL confirmation of seeded row → typecheck/lint/production build all passing.
+
+---
+
 ### 2026-07-15 — Phase 3 database foundation begins (Prisma + MySQL)
 
 - **DECISION.** You installed MySQL Community Server 8.0.46 locally on Windows ("Server only" install — no Workbench, since we'll use Prisma Studio instead) and created an empty `akmi_untirta_dev` database via the `mysql` CLI.
