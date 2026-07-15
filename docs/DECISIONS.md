@@ -4,6 +4,18 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-15 — Phase 2 public layout (header, footer, homepage skeleton)
+
+- **DECISION.** Added `lucide-react` (icon library) — justified by needing several consistent UI icons (menu/close/chevron/mail) rather than hand-drawing SVGs; small, tree-shakeable, well-maintained.
+- **DECISION.** Desktop dropdown menus ("Tentang Kami", "Lainnya") and the mobile accordion use the native HTML `<details>/<summary>` element instead of a JS dropdown library (e.g. Headless UI/Radix). This gives full keyboard support and correct ARIA semantics for free, with zero extra dependencies — appropriate for a two-item, non-modal dropdown. Known trade-off: it doesn't auto-close on outside click (native browser behavior); acceptable for MVP, can be enhanced later with a small JS handler if it bothers users in testing.
+- **DECISION.** `src/lib/navigation.ts` is the single source of truth for the site's nav structure, shared by the header and footer, so the confirmed IA (see `docs/FEATURES.md` §1) only needs to be edited in one place.
+- **DECISION.** Added a `ComingSoon` component and matching placeholder pages for every nav destination (`/tentang`, `/tentang/struktur`, `/tentang/kontak`, `/tentang/galeri`, `/artikel`, `/berita`, `/kegiatan`, `/perpustakaan`, `/layanan`, `/jadwal`, `/laporan`) so clicking any menu item shows a clear "coming soon" message instead of a 404 during development. These get replaced module-by-module starting Phase 4 (Articles).
+- **DECISION.** Homepage rebuilt as a real skeleton matching the brief's required sections (hero, program utama, artikel terbaru, berita terbaru, kegiatan mendatang, galeri pilihan, layanan, CTA, newsletter, kontak), using a shared `Section` wrapper and `PlaceholderCard` for the not-yet-wired content blocks. The earlier design-token preview content has been retired now that the palette is approved and verified.
+- **DEFERRED.** Social media link URLs in the footer still point to `#` — exact handles are pending (see the Phase 0 entry below) and will be wired up in Site Settings (Phase 6).
+- Verified via typecheck, lint, production build (all 12 routes built successfully), a Playwright screenshot of desktop and mobile homepage layouts, and an automated test confirming the mobile hamburger menu opens and the accordion dropdown expands correctly.
+
+---
+
 ### 2026-07-15 — Brand palette retuned to match real logo
 
 - **DECISION.** You added the real logo file to `public/brand/logo.png` (via your own `git add`/`commit`/`push` — first self-driven Git workflow of the project). Colors were sampled directly from it.

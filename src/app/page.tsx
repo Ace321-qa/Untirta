@@ -1,137 +1,141 @@
-const brandSwatches = [
-  "bg-brand-50",
-  "bg-brand-100",
-  "bg-brand-200",
-  "bg-brand-300",
-  "bg-brand-400",
-  "bg-brand-500",
-  "bg-brand-600",
-  "bg-brand-700",
-  "bg-brand-800",
-  "bg-brand-900",
-  "bg-brand-950",
-];
-
-const accentSwatches = [
-  "bg-accent-50",
-  "bg-accent-100",
-  "bg-accent-200",
-  "bg-accent-300",
-  "bg-accent-400",
-  "bg-accent-500",
-  "bg-accent-600",
-  "bg-accent-700",
-  "bg-accent-800",
-  "bg-accent-900",
-];
-
 import Image from "next/image";
+import Link from "next/link";
+import { Mail } from "lucide-react";
+
+import { Container } from "@/components/layout/Container";
+import { Section } from "@/components/home/Section";
+import { PlaceholderCard } from "@/components/home/PlaceholderCard";
+import { siteContact } from "@/lib/navigation";
 
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-10 px-6 py-16">
-      <header className="flex flex-col items-center gap-2 text-center">
-        <Image
-          src="/brand/logo.png"
-          alt="Logo AKMI Untirta"
-          width={88}
-          height={88}
-          priority
-        />
-        <p className="text-brand-700 dark:text-brand-300 text-sm font-medium tracking-wide uppercase">
-          Tahap pembangunan — pratinjau design system
-        </p>
-        <h1 className="text-brand-950 dark:text-brand-50 text-3xl font-semibold sm:text-4xl">
-          Website AKMI Untirta
-        </h1>
-        <p className="mx-auto max-w-md text-base text-zinc-600 dark:text-zinc-400">
-          Halaman ini menampilkan token warna, tipografi, dan komponen dasar
-          yang akan dipakai di seluruh situs. Tampilan akhir akan dibangun
-          bertahap pada fase berikutnya.
-        </p>
-      </header>
-
-      <section aria-labelledby="colors-heading" className="flex flex-col gap-3">
-        <h2
-          id="colors-heading"
-          className="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
-        >
-          Warna utama (Brand)
-        </h2>
-        <div className="shadow-brand-sm flex overflow-hidden rounded-xl">
-          {brandSwatches.map((swatch) => (
-            <div key={swatch} className={`h-12 flex-1 ${swatch}`} />
-          ))}
-        </div>
-
-        <h2 className="mt-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-          Warna aksen (Accent)
-        </h2>
-        <div className="shadow-brand-sm flex overflow-hidden rounded-xl">
-          {accentSwatches.map((swatch) => (
-            <div key={swatch} className={`h-12 flex-1 ${swatch}`} />
-          ))}
-        </div>
+    <>
+      <section className="bg-brand-50 dark:bg-brand-950 border-b border-zinc-200 dark:border-zinc-800">
+        <Container className="flex flex-col items-center gap-4 py-16 text-center sm:py-24">
+          <Image
+            src="/brand/logo.png"
+            alt="AKMI Untirta"
+            width={96}
+            height={96}
+            priority
+          />
+          <h1 className="max-w-2xl text-3xl font-semibold text-zinc-900 sm:text-5xl dark:text-zinc-50">
+            AKMI Untirta
+          </h1>
+          <p className="max-w-xl text-base text-zinc-700 sm:text-lg dark:text-zinc-300">
+            Aktivitas Keagamaan Mahasiswa Islam Universitas Sultan Ageng
+            Tirtayasa — wadah dakwah, keilmuan, dan pelayanan bagi mahasiswa
+            Muslim di lingkungan kampus.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <Link
+              href="/tentang"
+              className="bg-brand-600 shadow-brand-sm hover:bg-brand-700 rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-colors"
+            >
+              Tentang Kami
+            </Link>
+            <Link
+              href="/tentang/kontak"
+              className="border-brand-600 text-brand-700 dark:text-brand-300 dark:hover:bg-brand-900 rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-white"
+            >
+              Hubungi Kami
+            </Link>
+          </div>
+        </Container>
       </section>
 
-      <section aria-labelledby="type-heading" className="flex flex-col gap-2">
-        <h2
-          id="type-heading"
-          className="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
-        >
-          Tipografi
-        </h2>
-        <p className="text-4xl font-semibold text-zinc-900 dark:text-zinc-50">
-          Judul Besar
-        </p>
-        <p className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-          Judul Bagian
-        </p>
-        <p className="text-lg font-medium text-zinc-800 dark:text-zinc-200">
-          Judul Kecil
-        </p>
-        <p className="text-base text-zinc-700 dark:text-zinc-300">
-          Teks paragraf standar untuk artikel, berita, dan deskripsi kegiatan.
-        </p>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Teks kecil untuk keterangan tambahan, tanggal, atau label.
-        </p>
-      </section>
-
-      <section
-        aria-labelledby="components-heading"
-        className="flex flex-col gap-4"
+      <Section
+        id="program-utama"
+        title="Program Utama"
+        description="Program atau pengumuman unggulan yang sedang berjalan."
       >
-        <h2
-          id="components-heading"
-          className="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
-        >
-          Contoh komponen dasar
-        </h2>
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            className="bg-brand-600 shadow-brand-sm hover:bg-brand-700 rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-colors"
-          >
-            Tombol Utama
-          </button>
-          <button
-            type="button"
-            className="border-brand-600 text-brand-700 hover:bg-brand-50 dark:text-brand-300 dark:hover:bg-brand-950 rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors"
-          >
-            Tombol Sekunder
-          </button>
-        </div>
-        <div className="shadow-brand-md rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-          <p className="text-brand-700 dark:text-brand-300 text-sm font-medium">
-            Contoh kartu
+        <PlaceholderCard label="Program atau pengumuman utama akan tampil di sini setelah modul Beranda/Site Settings dibangun." />
+      </Section>
+
+      <Section
+        id="artikel-terbaru"
+        title="Artikel Terbaru"
+        viewAllHref="/artikel"
+      >
+        <PlaceholderCard label="Artikel terbaru akan tampil di sini setelah modul Artikel dibangun (Fase 4)." />
+      </Section>
+
+      <Section id="berita-terbaru" title="Berita Terbaru" viewAllHref="/berita">
+        <PlaceholderCard label="Berita terbaru akan tampil di sini setelah modul Berita dibangun." />
+      </Section>
+
+      <Section
+        id="kegiatan-mendatang"
+        title="Kegiatan Mendatang"
+        viewAllHref="/kegiatan"
+      >
+        <PlaceholderCard label="Kegiatan mendatang akan tampil di sini setelah modul Kegiatan dibangun." />
+      </Section>
+
+      <Section
+        id="galeri-pilihan"
+        title="Galeri Pilihan"
+        viewAllHref="/tentang/galeri"
+      >
+        <PlaceholderCard label="Foto kegiatan pilihan akan tampil di sini setelah modul Galeri dibangun." />
+      </Section>
+
+      <Section id="layanan" title="Layanan" viewAllHref="/layanan">
+        <PlaceholderCard label="Direktori layanan AKMI Untirta akan tampil di sini." />
+      </Section>
+
+      <section className="bg-brand-600 border-y border-zinc-200 dark:border-zinc-800">
+        <Container className="flex flex-col items-center gap-4 py-12 text-center">
+          <h2 className="text-2xl font-semibold text-white">
+            Ingin ikut berkontribusi bersama kami?
+          </h2>
+          <p className="text-brand-50 max-w-xl text-sm">
+            Ikuti kegiatan, program, dan kabar terbaru dari AKMI Untirta.
           </p>
-          <p className="mt-1 text-base text-zinc-700 dark:text-zinc-300">
-            Kartu ini menunjukkan sudut membulat dan bayangan bertema hijau yang
-            akan dipakai berulang di seluruh situs.
-          </p>
-        </div>
+          <Link
+            href="/kegiatan"
+            className="text-brand-700 hover:bg-brand-50 rounded-lg bg-white px-5 py-2.5 text-sm font-medium transition-colors"
+          >
+            Lihat Kegiatan Kami
+          </Link>
+        </Container>
       </section>
-    </main>
+
+      <Section
+        id="newsletter"
+        title="Berlangganan Kabar Terbaru"
+        description="Dapatkan info kegiatan dan artikel terbaru langsung ke email Anda."
+      >
+        <form className="flex max-w-md flex-col gap-2 sm:flex-row">
+          <label htmlFor="newsletter-email" className="sr-only">
+            Alamat email
+          </label>
+          <input
+            id="newsletter-email"
+            type="email"
+            disabled
+            placeholder="Alamat email Anda"
+            className="flex-1 rounded-lg border border-zinc-300 px-4 py-2.5 text-sm text-zinc-500 disabled:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-500"
+          />
+          <button
+            type="button"
+            disabled
+            className="rounded-lg bg-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-600 dark:bg-zinc-700 dark:text-zinc-400"
+          >
+            Segera Hadir
+          </button>
+        </form>
+      </Section>
+
+      <Section id="kontak-singkat" title="Kontak">
+        <a
+          href={`mailto:${siteContact.email}`}
+          className="text-brand-700 dark:text-brand-300 inline-flex items-center gap-2 text-base hover:underline"
+        >
+          <Mail aria-hidden="true" className="size-5" />
+          {siteContact.email}
+        </a>
+      </Section>
+    </>
   );
 }
