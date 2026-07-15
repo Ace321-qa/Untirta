@@ -4,6 +4,19 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-15 — Phase 4: Articles, first complete vertical slice
+
+- **DECISION.** Article body is **Markdown**, not a full WYSIWYG rich-text editor. Rendered with `react-markdown` + `remark-gfm`, styled with the `@tailwindcss/typography` plugin. Deliberately simpler than integrating a WYSIWYG editor (TipTap/Slate) — Markdown covers headings, bold/italic, lists, links, and tables, and `react-markdown`'s default (no `rehype-raw`) never executes raw HTML from the source, which is also a meaningful XSS-safety default, not just a scope-reduction choice.
+- **DECISION.** Featured images are a plain URL text field for now, not a file upload. Real upload (validation, safe filenames, persistent storage) is its own dedicated feature, deferred per the original project brief's explicit separate treatment of media handling. `next.config.ts` allows optimizing images from any HTTPS host — acceptable since only trusted dashboard staff (not public users) can set this URL.
+- **DECISION.** Only `DRAFT` and `PUBLISHED` statuses exist for now (not the full Draft → In Review → Scheduled → Published → Archived workflow described elsewhere in the brief) — matches the literal Phase 4 checklist, and a multi-stage editorial workflow isn't meaningful yet with just one Super Admin account. Scheduled publishing and archival are natural additions once there's an actual multi-person editorial team.
+- **DECISION.** Slugs are generated once at creation from the title and never change on edit, even if the title changes later — protects against silently breaking shared/indexed article URLs. (Manually editable slugs could be added later if needed.)
+- **DECISION.** Categories are pre-seeded (Kajian Islam, Kegiatan, Pengumuman) with no admin UI to manage them yet; tags are freeform (comma-separated in the article form) and auto-created on save via `connectOrCreate`. Full category CRUD deferred — not required for the vertical slice to work end-to-end.
+- **DECISION.** Any authenticated dashboard user can manage all articles for now — no per-role restriction (e.g. Author-can't-publish, Editor-can-publish) enforced yet. Reasonable since only a Super Admin account exists currently; will need real enforcement once a second staff account with a lesser role is added.
+- **BUG CAUGHT AND FIXED before reaching the user:** Prisma's `tags: { set: [], connectOrCreate: [...] }` pattern (meant to replace an article's tags on edit) is only valid on `update` — using it on `create` throws `PrismaClientValidationError`, since there's no existing relation to clear yet. Fixed by using `connectOrCreate` alone on create, and `{ set: [], connectOrCreate }` only on update. Caught via the scripted end-to-end browser test before any commit.
+- Verified end-to-end with a scripted browser test against live MySQL: seeded article visible in admin list → create a new draft → confirm it's hidden from the public listing/homepage while in draft → edit it to Published → confirm it now appears on the public listing, homepage, and its own detail page with Markdown correctly rendered (bold, italic, lists), tags, and category all showing → confirmed unauthenticated visitors are redirected away from all nested `/dashboard/artikel/*` routes → confirmed a nonexistent article slug returns a real 404.
+
+---
+
 ### 2026-07-15 — Minimal login built to unblock Phase 4 (Articles)
 
 - **DECISION.** Built a minimal Auth.js v5 (`next-auth@beta`) login now, ahead of the full Phase 5 auth system, specifically so Phase 4 (Articles) has something real to authorize against. Full Phase 5 scope (password reset, email verification, brute-force rate limiting) is still deferred.

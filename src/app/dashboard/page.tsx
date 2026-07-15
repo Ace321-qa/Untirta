@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { auth } from "@/auth";
 import { Container } from "@/components/layout/Container";
 import { logoutAction } from "./actions";
@@ -13,6 +15,14 @@ export default async function DashboardPage() {
       <p className="text-sm text-zinc-600 dark:text-zinc-400">
         Peran: {session?.user?.role}
       </p>
+
+      <Link
+        href="/dashboard/artikel"
+        className="bg-brand-600 shadow-brand-sm hover:bg-brand-700 w-fit rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-colors"
+      >
+        Kelola Artikel
+      </Link>
+
       <form action={logoutAction}>
         <button
           type="submit"

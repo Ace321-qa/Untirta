@@ -5,9 +5,25 @@ import { Mail } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/home/Section";
 import { PlaceholderCard } from "@/components/home/PlaceholderCard";
+import { ArticleCard } from "@/components/articles/ArticleCard";
 import { siteContact } from "@/lib/navigation";
+import { prisma } from "@/lib/prisma";
 
-export default function Home() {
+export default async function Home() {
+  const latestArticles = await prisma.article.findMany({
+    where: { status: "PUBLISHED" },
+    orderBy: { publishedAt: "desc" },
+    take: 3,
+    select: {
+      slug: true,
+      title: true,
+      excerpt: true,
+      featuredImage: true,
+      publishedAt: true,
+      category: { select: { name: true } },
+    },
+  });
+
   return (
     <>
       <section className="bg-brand-50 dark:bg-brand-950 border-b border-zinc-200 dark:border-zinc-800">
@@ -57,7 +73,15 @@ export default function Home() {
         title="Artikel Terbaru"
         viewAllHref="/artikel"
       >
-        <PlaceholderCard label="Artikel terbaru akan tampil di sini setelah modul Artikel dibangun (Fase 4)." />
+        {latestArticles.length === 0 ? (
+          <PlaceholderCard label="Artikel terbaru akan tampil di sini setelah artikel pertama dipublikasikan." />
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {latestArticles.map((article) => (
+              <ArticleCard key={article.slug} article={article} />
+            ))}
+          </div>
+        )}
       </Section>
 
       <Section id="berita-terbaru" title="Berita Terbaru" viewAllHref="/berita">

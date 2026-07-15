@@ -1,14 +1,14 @@
 # Database — AKMI Untirta Website
 
-Status: Phase 3 (foundation) complete
+Status: Phase 4 (Articles) complete
 Last updated: 2026-07-15
 
 ## What's in the database right now
 
-Only the tables needed to support login exist so far. Content tables (Article,
-News, Event, Gallery, etc.) are deliberately **not** created yet — they arrive
-one at a time starting Phase 4, per the project's "one vertical slice at a
-time" rule. See `docs/FEATURES.md` for the full future table list.
+Login/account tables (Phase 3) plus Articles (Phase 4). Other content tables
+(News, Event, Gallery, etc.) are deliberately **not** created yet — they
+arrive one at a time in later phases, per the project's "one vertical slice
+at a time" rule. See `docs/FEATURES.md` for the full future table list.
 
 ## Tables (plain-language)
 
@@ -34,9 +34,32 @@ in the admin dashboard, never on public pages.
 
 ### `accounts`, `sessions`, `verification_tokens`
 
-These three exist purely to support the login system we'll build in Phase 5
-(using a library called Auth.js). You won't interact with them directly —
-they track things like active login sessions and password-reset links.
+These three exist purely to support the login system (Auth.js). You won't
+interact with them directly — they track things like active login sessions
+and password-reset links.
+
+### `articles`
+
+One row per article, in either state:
+
+| Field           | Purpose                                                                                                                                                                                  |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`         | Article title.                                                                                                                                                                           |
+| `slug`          | The URL-friendly identifier (e.g. `/artikel/judul-artikel`). Generated once at creation and never changes, even if the title is edited later — this protects shared links from breaking. |
+| `excerpt`       | Optional short summary shown in listing cards.                                                                                                                                           |
+| `body`          | The article content, written in **Markdown** (not a WYSIWYG editor — see docs/DECISIONS.md for why).                                                                                     |
+| `featuredImage` | Optional image URL (not a file upload yet — see docs/DECISIONS.md).                                                                                                                      |
+| `status`        | `DRAFT` (not publicly visible) or `PUBLISHED`.                                                                                                                                           |
+| `publishedAt`   | Set automatically the first time an article is published; stays fixed after that.                                                                                                        |
+| `authorId`      | Which user wrote it.                                                                                                                                                                     |
+| `categoryId`    | Optional single category (Kajian Islam, Kegiatan, Pengumuman — pre-seeded).                                                                                                              |
+| `tags`          | Zero or more freeform tags (many-to-many), created automatically as you type them.                                                                                                       |
+
+### `article_categories`, `article_tags`
+
+Simple lookup tables for organizing articles. Categories are pre-seeded (no
+admin UI to manage them yet); tags are created on the fly when an admin types
+a new tag name while saving an article.
 
 ## A simplification we made on purpose
 

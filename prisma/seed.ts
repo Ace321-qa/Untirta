@@ -22,6 +22,41 @@ async function main() {
   console.log(
     'Sample login password is "ChangeMe123!" — for local development only, never use this in production.',
   );
+
+  const categories = [
+    { name: "Kajian Islam", slug: "kajian-islam" },
+    { name: "Kegiatan", slug: "kegiatan" },
+    { name: "Pengumuman", slug: "pengumuman" },
+  ];
+  for (const category of categories) {
+    await prisma.articleCategory.upsert({
+      where: { slug: category.slug },
+      update: {},
+      create: category,
+    });
+  }
+  console.log("Seeded categories:", categories.map((c) => c.name).join(", "));
+
+  const kajianCategory = await prisma.articleCategory.findUniqueOrThrow({
+    where: { slug: "kajian-islam" },
+  });
+
+  const sampleArticle = await prisma.article.upsert({
+    where: { slug: "selamat-datang-di-website-akmi-untirta" },
+    update: {},
+    create: {
+      title: "Selamat Datang di Website AKMI Untirta",
+      slug: "selamat-datang-di-website-akmi-untirta",
+      excerpt:
+        "Website resmi AKMI Untirta kini hadir sebagai pusat informasi kegiatan, kajian, dan dakwah kampus.",
+      body: "Ini adalah artikel contoh untuk menguji fitur Artikel. Anda dapat menggunakan **Markdown** di sini, termasuk daftar:\n\n- Judul dan subjudul\n- Teks tebal dan miring\n- Tautan\n\nKonten sesungguhnya akan ditambahkan oleh admin melalui dashboard.",
+      status: "PUBLISHED",
+      publishedAt: new Date(),
+      authorId: admin.id,
+      categoryId: kajianCategory.id,
+    },
+  });
+  console.log("Seeded article:", sampleArticle.title);
 }
 
 main()

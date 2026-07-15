@@ -42,8 +42,59 @@ model User {
 
   accounts Account[]
   sessions Session[]
+  articles Article[]
 
   @@map("users")
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model ArticleCategory {
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
+  articles Article[]
+
+  @@map("article_categories")
+}
+
+model ArticleTag {
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
+  articles Article[]
+
+  @@map("article_tags")
+}
+
+model Article {
+  id            String        @id @default(cuid())
+  title         String
+  slug          String        @unique
+  excerpt       String?       @db.VarChar(500)
+  // Markdown source, rendered safely (no raw HTML) on the public pages.
+  body          String        @db.LongText
+  // Plain image URL for now — real file upload comes with the dedicated
+  // media-handling feature later. See docs/DECISIONS.md.
+  featuredImage String?
+  status        ArticleStatus @default(DRAFT)
+  publishedAt   DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  authorId   String
+  author     User             @relation(fields: [authorId], references: [id])
+  categoryId String?
+  category   ArticleCategory? @relation(fields: [categoryId], references: [id])
+  tags       ArticleTag[]
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([status, publishedAt])
+  @@map("articles")
 }
 
 // Auth.js (Phase 5) needs Account/Session/VerificationToken in this shape.
