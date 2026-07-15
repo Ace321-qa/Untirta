@@ -4,6 +4,18 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-15 — Minimal login built to unblock Phase 4 (Articles)
+
+- **DECISION.** Built a minimal Auth.js v5 (`next-auth@beta`) login now, ahead of the full Phase 5 auth system, specifically so Phase 4 (Articles) has something real to authorize against. Full Phase 5 scope (password reset, email verification, brute-force rate limiting) is still deferred.
+- **DECISION.** Used `next-auth@5.0.0-beta.31` — note this package is still tagged `beta` on npm even now, not `latest` (which is the older, App-Router-unfriendly v4). This is a known, long-standing situation in the Auth.js ecosystem: v5 beta is the de facto standard for Next.js App Router projects despite the label. Flagging this clearly since it's an unusual case of depending on a "beta" package by design.
+- **DECISION.** Session strategy is JWT, not database sessions — required when using the Credentials provider (a hard Auth.js constraint, confirmed via research). The `accounts`/`sessions` tables created in Phase 3 remain unused by this Credentials-only setup but stay ready for a future OAuth provider (e.g. "Login with Google"), which would use them via a Prisma adapter.
+- **DECISION.** Login implemented via a React 19 Server Action (`useActionState` + `signIn()` inside a `"use server"` action) rather than client-side `next-auth/react`, keeping the login page mostly server-rendered.
+- **DECISION.** `/dashboard` is protected by a server-side check in `src/app/dashboard/layout.tsx` (calls `auth()`, redirects to `/login` if absent) rather than Next.js middleware — simpler to reason about for this project's stage, and still fully server-enforced per the project's "never rely on hiding buttons" rule. Both `/login` and `/dashboard` are marked `noindex`.
+- Verified end-to-end with a scripted browser test against a live database: wrong password shows an error and stays on `/login`; correct credentials (the seeded Super Admin) redirect to `/dashboard` and display the right name/role; logout redirects home; and `/dashboard` is re-protected immediately after logout.
+- **Aside (this cloud session's test environment only, not user-facing):** while re-testing, this container's test database got tangled between MariaDB and real MySQL packages (an apt package conflict from earlier testing) and needed a clean reinitialize. Purely a cloud-session housekeeping detail — doesn't affect the user's own MySQL install or the delivered code.
+
+---
+
 ### 2026-07-15 — Phase 3 minimum schema created and migrated
 
 - **DECISION.** You confirmed the proposed minimum schema (`User`, `Account`, `Session`, `VerificationToken`, role as a simple enum on `User`). Schema written, formatted, validated, and migrated successfully against a live test database — verified the actual MySQL table structure with `DESCRIBE users`.
