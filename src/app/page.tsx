@@ -25,10 +25,19 @@ const accentSwatches = [
   "bg-accent-900",
 ];
 
+import Image from "next/image";
+
 export default function Home() {
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-10 px-6 py-16">
-      <header className="flex flex-col gap-2 text-center">
+      <header className="flex flex-col items-center gap-2 text-center">
+        <Image
+          src="/brand/logo.png"
+          alt="Logo AKMI Untirta"
+          width={88}
+          height={88}
+          priority
+        />
         <p className="text-brand-700 dark:text-brand-300 text-sm font-medium tracking-wide uppercase">
           Tahap pembangunan — pratinjau design system
         </p>

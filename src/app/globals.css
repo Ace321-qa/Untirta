@@ -7,9 +7,13 @@
 
 /*
  * AKMI Untirta design tokens.
- * "brand" = primary emerald green scale, "accent" = warm gold used
- * sparingly for highlights. Both are original hand-tuned scales, not
- * copied from any reference site or from Tailwind's own default palette.
+ * "brand" = primary green scale, sampled and tuned directly from the
+ * official logo (public/brand/logo.png): brand-500 matches the logo's
+ * dominant fill green, brand-700 matches its dark badge outline.
+ * brand-600 is deliberately a touch darker than the logo's literal
+ * fill tone so white button text clears WCAG AA contrast (~5.8:1).
+ * "accent" = warm gold used sparingly for highlights, an original
+ * hand-tuned scale chosen to complement the brand green.
  * Status colors (success/warning/danger/info) intentionally reuse
  * Tailwind's built-in red/amber/blue scales rather than adding new
  * tokens — those are generic, universally-understood conventions.
@@ -20,17 +24,17 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  --color-brand-50: #edfcf5;
-  --color-brand-100: #d3f8e3;
-  --color-brand-200: #a6f0c5;
-  --color-brand-300: #70e3a4;
-  --color-brand-400: #3ecb84;
-  --color-brand-500: #1fae6a;
-  --color-brand-600: #148a56;
-  --color-brand-700: #106e46;
-  --color-brand-800: #0f5738;
-  --color-brand-900: #0d4530;
-  --color-brand-950: #06271b;
+  --color-brand-50: #eafcec;
+  --color-brand-100: #ccf7d1;
+  --color-brand-200: #97eea0;
+  --color-brand-300: #5cdb68;
+  --color-brand-400: #2ecc3a;
+  --color-brand-500: #098e09;
+  --color-brand-600: #0a7606;
+  --color-brand-700: #0a6003;
+  --color-brand-800: #0a4a03;
+  --color-brand-900: #0a3603;
+  --color-brand-950: #051f02;
 
   --color-accent-50: #fefaf0;
   --color-accent-100: #fdf1d6;
@@ -43,8 +47,8 @@
   --color-accent-800: #784419;
   --color-accent-900: #653a19;
 
-  --shadow-brand-sm: 0 1px 2px 0 rgb(15 87 56 / 0.08);
-  --shadow-brand-md: 0 4px 16px -2px rgb(15 87 56 / 0.16);
+  --shadow-brand-sm: 0 1px 2px 0 rgb(10 54 3 / 0.08);
+  --shadow-brand-md: 0 4px 16px -2px rgb(10 54 3 / 0.16);
 }
 
 @media (prefers-color-scheme: dark) {

@@ -4,6 +4,15 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-15 — Brand palette retuned to match real logo
+
+- **DECISION.** You added the real logo file to `public/brand/logo.png` (via your own `git add`/`commit`/`push` — first self-driven Git workflow of the project). Colors were sampled directly from it.
+- **DECISION.** Retuned the `brand-*` scale: `brand-500` now matches the logo's dominant fill green (`#098e09`) exactly; `brand-700` matches its dark badge outline (`#0a6003`) exactly. `brand-600` (the default color for solid buttons/links) is intentionally a touch darker than the logo's literal fill tone — `#0a7606` — so white button text clears WCAG AA contrast (~5.8:1; the literal logo green only reaches ~4.3:1, just under the 4.5:1 minimum for normal text).
+- **DECISION.** Accent gold scale left unchanged — you confirmed it paired well before the retune, and gold still complements the more vivid grass-green just as well.
+- Verified via typecheck, lint, production build, and a Playwright screenshot showing the logo and updated swatches rendering correctly.
+
+---
+
 ### 2026-07-15 — Phase 1 design system tokens
 
 - **DECISION.** Added Prettier (+ `prettier-plugin-tailwindcss` for automatic class sorting) alongside ESLint, wired via `eslint-config-prettier` so the two tools don't fight over formatting rules.
