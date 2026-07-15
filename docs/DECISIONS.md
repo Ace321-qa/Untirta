@@ -4,6 +4,16 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-15 — Phase 3 database foundation begins (Prisma + MySQL)
+
+- **DECISION.** You installed MySQL Community Server 8.0.46 locally on Windows ("Server only" install — no Workbench, since we'll use Prisma Studio instead) and created an empty `akmi_untirta_dev` database via the `mysql` CLI.
+- **DECISION.** Installed `prisma` + `@prisma/client` (v7.8.0). Prisma 7 changed its config approach from earlier versions: it now uses a `prisma.config.ts` file (loading `DATABASE_URL` via `dotenv`) rather than an inline `url = env(...)` line in `schema.prisma`, and the generated client now outputs to `src/generated/prisma` (gitignored, regenerated via `prisma generate`) instead of living inside `node_modules`. Followed the tool's own scaffolding rather than older training-data patterns, per the project's own `AGENTS.md` warning about breaking changes in this environment.
+- **DECISION.** Installed MariaDB (MySQL-compatible) inside this cloud session purely so Claude can test real migrations/connections before handing steps to the user — not part of the shipped project. Confirmed Prisma successfully connects to a live database (`prisma db pull` correctly reported the target database and that it was empty).
+- **DECISION.** `.env.example` added with a clearly fake placeholder `DATABASE_URL`; the real `.env` (with the user's actual local MySQL password) stays local-only and gitignored, never committed or shared in chat.
+- **PROPOSED (awaiting user confirmation).** Phase 3's "minimum schema" scope: `User`, `Account`, `Session`, `VerificationToken` only (the tables Auth.js needs), with role stored as a simple enum directly on `User` rather than building a full separate Role/Permission table system — deferred until multiple overlapping staff roles actually require it. All content tables (Article, News, Event, etc.) are deferred to their own phases starting Phase 4, per the "one vertical slice at a time" rule.
+
+---
+
 ### 2026-07-15 — Phase 2 public layout (header, footer, homepage skeleton)
 
 - **DECISION.** Added `lucide-react` (icon library) — justified by needing several consistent UI icons (menu/close/chevron/mail) rather than hand-drawing SVGs; small, tree-shakeable, well-maintained.
