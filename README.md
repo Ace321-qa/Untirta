@@ -22,6 +22,10 @@ npm run dev
 
 Then open http://localhost:3000 in your browser.
 
+**After every `git pull`:** if `package.json` appears in the list of changed
+files, run `npm install` again before `npm run dev` — pulling code does not
+automatically download new dependencies.
+
 ## Useful commands
 
 | Command            | What it does                         |
