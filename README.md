@@ -24,12 +24,12 @@ Then open http://localhost:3000 in your browser.
 
 ## Useful commands
 
-| Command | What it does |
-|---|---|
-| `npm run dev` | Start the local development server |
-| `npm run build` | Create a production build |
-| `npm run start` | Run the production build locally |
-| `npm run lint` | Check code style/quality with ESLint |
-| `npx tsc --noEmit` | Check for TypeScript type errors |
+| Command            | What it does                         |
+| ------------------ | ------------------------------------ |
+| `npm run dev`      | Start the local development server   |
+| `npm run build`    | Create a production build            |
+| `npm run start`    | Run the production build locally     |
+| `npm run lint`     | Check code style/quality with ESLint |
+| `npx tsc --noEmit` | Check for TypeScript type errors     |
 
 Project status: Phase 1 (local foundation) in progress — see `docs/PROGRESS.md`.

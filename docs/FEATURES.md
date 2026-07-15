@@ -25,6 +25,7 @@ Lainnya (Other)
 ```
 
 Notes:
+
 - "Struktur Pengurus" appears only once, under "Tentang Kami" (confirmed — no duplicate link under "Lainnya").
 - "Laporan" is assumed to mean organizational accountability reports (Laporan Pertanggungjawaban / annual reports), published as downloadable documents. **ASSUMPTION — please confirm when we build this module.**
 - Admin dashboard (`/dashboard/...`) is a separate area, not part of this public menu, and is not shown here.
@@ -33,30 +34,31 @@ Notes:
 
 Built one complete module at a time (vertical slices), roughly in this order:
 
-| # | Module | Public pages | Admin management | Key entities |
-|---|---|---|---|---|
-| 1 | Foundation | — | — | Project setup, design system, layout shell |
-| 2 | Database + Auth | Login | Users, Roles | User, Account, Session, Role |
-| 3 | **Articles** (first full vertical slice) | List, detail, search, categories/tags | Create/edit/publish/schedule | Article, ArticleCategory, ArticleTag |
-| 4 | About / Static content | Profil, Visi-Misi | Edit static page content | StaticPage |
-| 5 | Management Structure | Struktur Pengurus (by period) | Manage periods, divisions, officers | ManagementPeriod, Division, Officer |
-| 6 | News | List, detail | Same as Articles, plus reporter/location fields | News, NewsCategory |
-| 7 | Events/Kegiatan | Upcoming/past list, detail | Create/edit, registration link, quota | Event |
-| 8 | Gallery | Albums, photo lightbox | Manage albums/photos | GalleryAlbum, GalleryImage |
-| 9 | **Perpustakaan (Digital Library)** — see §3 below | Book list, book detail, "Baca Buku" reader page | Create/edit book entries, upload PDF or set reader link | Book (new entity) |
-| 10 | Services / Layanan | Services directory | Manage services list | Service |
-| 11 | Schedule / Jadwal | Calendar (month/list view) | Manage schedule items | ScheduleItem |
-| 12 | Reports / Laporan | Downloadable reports list | Upload/manage reports | Report (new entity, simple) |
-| 13 | Contact form | Form + success/error states | View submitted messages | ContactMessage |
-| 14 | Newsletter signup | Subscribe box (footer/home) | View subscriber list | NewsletterSubscriber |
-| 15 | Site settings & homepage sections | — | Manage homepage blocks, nav, social links | SiteSetting, NavigationItem |
-| 16 | Search | Global search bar | — | (uses existing tables) |
-| 17 | SEO/production hardening | sitemap.xml, robots.txt, metadata | — | — |
-| 18 | Hostinger deployment | Live site | — | — |
+| #   | Module                                            | Public pages                                    | Admin management                                        | Key entities                               |
+| --- | ------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------- | ------------------------------------------ |
+| 1   | Foundation                                        | —                                               | —                                                       | Project setup, design system, layout shell |
+| 2   | Database + Auth                                   | Login                                           | Users, Roles                                            | User, Account, Session, Role               |
+| 3   | **Articles** (first full vertical slice)          | List, detail, search, categories/tags           | Create/edit/publish/schedule                            | Article, ArticleCategory, ArticleTag       |
+| 4   | About / Static content                            | Profil, Visi-Misi                               | Edit static page content                                | StaticPage                                 |
+| 5   | Management Structure                              | Struktur Pengurus (by period)                   | Manage periods, divisions, officers                     | ManagementPeriod, Division, Officer        |
+| 6   | News                                              | List, detail                                    | Same as Articles, plus reporter/location fields         | News, NewsCategory                         |
+| 7   | Events/Kegiatan                                   | Upcoming/past list, detail                      | Create/edit, registration link, quota                   | Event                                      |
+| 8   | Gallery                                           | Albums, photo lightbox                          | Manage albums/photos                                    | GalleryAlbum, GalleryImage                 |
+| 9   | **Perpustakaan (Digital Library)** — see §3 below | Book list, book detail, "Baca Buku" reader page | Create/edit book entries, upload PDF or set reader link | Book (new entity)                          |
+| 10  | Services / Layanan                                | Services directory                              | Manage services list                                    | Service                                    |
+| 11  | Schedule / Jadwal                                 | Calendar (month/list view)                      | Manage schedule items                                   | ScheduleItem                               |
+| 12  | Reports / Laporan                                 | Downloadable reports list                       | Upload/manage reports                                   | Report (new entity, simple)                |
+| 13  | Contact form                                      | Form + success/error states                     | View submitted messages                                 | ContactMessage                             |
+| 14  | Newsletter signup                                 | Subscribe box (footer/home)                     | View subscriber list                                    | NewsletterSubscriber                       |
+| 15  | Site settings & homepage sections                 | —                                               | Manage homepage blocks, nav, social links               | SiteSetting, NavigationItem                |
+| 16  | Search                                            | Global search bar                               | —                                                       | (uses existing tables)                     |
+| 17  | SEO/production hardening                          | sitemap.xml, robots.txt, metadata               | —                                                       | —                                          |
+| 18  | Hostinger deployment                              | Live site                                       | —                                                       | —                                          |
 
 ## 3. Perpustakaan (Digital Library) — scoped for MVP
 
 Confirmed pattern (functionality only, original implementation):
+
 1. **List page** (`/perpustakaan`) — grid/list of books with cover image, title, author, category.
 2. **Detail page** (`/perpustakaan/buku/[slug]`) — book description, author, category, cover, a "Baca Buku" (Read Book) button.
 3. **Reader page** (`/perpustakaan/buku/[slug]/baca`) — embeds a flipbook-style or PDF reader.
@@ -86,4 +88,4 @@ Implementation approach (to be finalized in Phase 6, not now): we will **not** u
 ## 6. Out of scope entirely for now
 
 - Anything requiring real-money payment processing.
-- Anything requiring bulk/marketing email sending (newsletter *storage* ships in MVP; actual bulk sending is deferred until you choose a provider and consent flow, per the original brief).
+- Anything requiring bulk/marketing email sending (newsletter _storage_ ships in MVP; actual bulk sending is deferred until you choose a provider and consent flow, per the original brief).

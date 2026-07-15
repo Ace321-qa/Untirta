@@ -5,7 +5,7 @@ Last updated: 2026-07-15
 
 ## 1. Who this project is for
 
-**Organization:** AKMI Untirta — *Aktivitas Keagamaan Mahasiswa Islam Universitas Sultan Ageng Tirtayasa* (an Islamic student activity unit / UKM at Universitas Sultan Ageng Tirtayasa, understood to be an evolution of the earlier LDK Baabussalam).
+**Organization:** AKMI Untirta — _Aktivitas Keagamaan Mahasiswa Islam Universitas Sultan Ageng Tirtayasa_ (an Islamic student activity unit / UKM at Universitas Sultan Ageng Tirtayasa, understood to be an evolution of the earlier LDK Baabussalam).
 
 **University:** Universitas Sultan Ageng Tirtayasa (Untirta), Banten.
 
@@ -25,7 +25,7 @@ We could not retrieve exact official wording from akmi-untirta.com (the site blo
   3. Membangun sinergi dengan lembaga kemahasiswaan dan masyarakat kampus lainnya.
 - **Nilai-nilai (placeholder):** Ukhuwah (persaudaraan), Amanah, Militansi dakwah, Profesionalisme, Pelayanan.
 
-*(Action item for you: replace this section's wording once the site can manage Static Pages — Phase 6.)*
+_(Action item for you: replace this section's wording once the site can manage Static Pages — Phase 6.)_
 
 ## 3. Public contact information (safe to publish)
 
@@ -37,8 +37,8 @@ We could not retrieve exact official wording from akmi-untirta.com (the site blo
 
 You told us "all info is public" for the member-only-data question. To keep this safe by default, we recommend this interpretation:
 
-- **Public:** organizational profile, vision/mission, officer *names, positions, photos, and short bios* (values the org already displays elsewhere, e.g. leadership announcements), published articles/news/events/gallery.
-- **Not public by default, even under a "public org" policy:** any individual officer's *personal* phone number, personal email, home address, or student ID number. These fields will exist in the database (useful for internal admin coordination) but will not render on public pages unless a field is explicitly marked public per-person in the dashboard.
+- **Public:** organizational profile, vision/mission, officer _names, positions, photos, and short bios_ (values the org already displays elsewhere, e.g. leadership announcements), published articles/news/events/gallery.
+- **Not public by default, even under a "public org" policy:** any individual officer's _personal_ phone number, personal email, home address, or student ID number. These fields will exist in the database (useful for internal admin coordination) but will not render on public pages unless a field is explicitly marked public per-person in the dashboard.
 
 This is a **default we recommend**, not a hard rule — you can override it later per person/per field once the Management Structure module exists (Phase 6).
 

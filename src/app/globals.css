@@ -5,11 +5,46 @@
   --foreground: #171717;
 }
 
+/*
+ * AKMI Untirta design tokens.
+ * "brand" = primary emerald green scale, "accent" = warm gold used
+ * sparingly for highlights. Both are original hand-tuned scales, not
+ * copied from any reference site or from Tailwind's own default palette.
+ * Status colors (success/warning/danger/info) intentionally reuse
+ * Tailwind's built-in red/amber/blue scales rather than adding new
+ * tokens — those are generic, universally-understood conventions.
+ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-brand-50: #edfcf5;
+  --color-brand-100: #d3f8e3;
+  --color-brand-200: #a6f0c5;
+  --color-brand-300: #70e3a4;
+  --color-brand-400: #3ecb84;
+  --color-brand-500: #1fae6a;
+  --color-brand-600: #148a56;
+  --color-brand-700: #106e46;
+  --color-brand-800: #0f5738;
+  --color-brand-900: #0d4530;
+  --color-brand-950: #06271b;
+
+  --color-accent-50: #fefaf0;
+  --color-accent-100: #fdf1d6;
+  --color-accent-200: #fbe1ac;
+  --color-accent-300: #f7c86f;
+  --color-accent-400: #f0ac3e;
+  --color-accent-500: #dd8f22;
+  --color-accent-600: #b96f16;
+  --color-accent-700: #935316;
+  --color-accent-800: #784419;
+  --color-accent-900: #653a19;
+
+  --shadow-brand-sm: 0 1px 2px 0 rgb(15 87 56 / 0.08);
+  --shadow-brand-md: 0 4px 16px -2px rgb(15 87 56 / 0.16);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +58,22 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Accessibility: always show a clear, brand-colored focus ring. */
+:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}
+
+/* Accessibility: honor the visitor's reduced-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
