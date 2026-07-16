@@ -4,6 +4,15 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-16 — Layanan (Services): a directory listing, not a full content type
+
+- **DECISION.** `Service` is deliberately simpler than Articles/News/Events/Gallery/Books — no slug, no individual detail page, no category. `docs/FEATURES.md`'s scope for this module is just a "Services directory," so the model is name + description + an optional external/internal link + DRAFT/PUBLISHED + `displayOrder`. Adding a slug or detail route now would be speculative — nothing in the brief asks for one, and it's easy to add later if a service ever needs its own page.
+- **DECISION.** No admin reordering UI — `displayOrder` is set automatically (append at `max(displayOrder) + 1` for new services, matching the same pattern used for `GalleryImage`/`Officer`) and isn't exposed as an editable field. With only a handful of services expected, manual reordering wasn't worth building yet.
+- **DECISION.** The homepage's "Layanan" section (previously a placeholder) is now wired to the same query pattern as every other homepage section — top 3 published services ordered by `displayOrder`, reusing the same `ServiceCard` component as the `/layanan` listing page rather than a separate homepage-only variant.
+- Verified end-to-end with a scripted browser test against live MySQL: seeded published services render on both `/layanan` and the homepage → `/dashboard/layanan` requires login → create a draft service (no link) → confirm hidden from public listing → edit it to add a link and publish → confirm it's now visible publicly with a working "Selengkapnya" link pointing at the right URL → confirmed a missing admin service id returns a real 404.
+
+---
+
 ### 2026-07-16 — Perpustakaan (Digital Library): browser-native PDF reader, no new vendor or dependency
 
 - **DECISION.** The reader page (`/perpustakaan/buku/[slug]/baca`) embeds the book's PDF in a plain `<iframe src={fileUrl}>` and relies on the browser's own built-in PDF viewer — not a "flipbook" third-party embed service, and not a new dependency like PDF.js. `docs/FEATURES.md` §3 explicitly listed both options as "to be finalized" — this is the simplest one that works today with zero new packages and zero vendor lock-in, consistent with the project's no-copying-the-reference-site rule (ldksyah.id likely uses a flipbook vendor; this deliberately doesn't).

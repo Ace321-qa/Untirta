@@ -230,6 +230,23 @@ model Book {
   @@map("books")
 }
 
+// A directory listing only — no individual detail pages, per
+// docs/FEATURES.md's scope for Layanan ("Services directory").
+model Service {
+  id           String        @id @default(cuid())
+  name         String
+  description  String        @db.Text
+  // Optional external or internal link (e.g. a WhatsApp number or form).
+  link         String?
+  status       ArticleStatus @default(DRAFT)
+  displayOrder Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([status])
+  @@map("services")
+}
+
 model GalleryAlbum {
   id          String        @id @default(cuid())
   title       String

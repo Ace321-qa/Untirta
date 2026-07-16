@@ -9,6 +9,7 @@ import { ArticleCard } from "@/components/articles/ArticleCard";
 import { NewsCard } from "@/components/news/NewsCard";
 import { EventCard } from "@/components/events/EventCard";
 import { GalleryCard } from "@/components/gallery/GalleryCard";
+import { ServiceCard } from "@/components/services/ServiceCard";
 import { siteContact } from "@/lib/navigation";
 import { prisma } from "@/lib/prisma";
 
@@ -18,7 +19,7 @@ import { prisma } from "@/lib/prisma";
 export const revalidate = 3600;
 
 export default async function Home() {
-  const [latestArticles, latestNews, upcomingEvents, featuredAlbums] =
+  const [latestArticles, latestNews, upcomingEvents, featuredAlbums, services] =
     await Promise.all([
       prisma.article.findMany({
         where: { status: "PUBLISHED" },
@@ -68,6 +69,12 @@ export default async function Home() {
           coverImage: true,
           eventDate: true,
         },
+      }),
+      prisma.service.findMany({
+        where: { status: "PUBLISHED" },
+        orderBy: { displayOrder: "asc" },
+        take: 3,
+        select: { id: true, name: true, description: true, link: true },
       }),
     ]);
 
@@ -176,7 +183,15 @@ export default async function Home() {
       </Section>
 
       <Section id="layanan" title="Layanan" viewAllHref="/layanan">
-        <PlaceholderCard label="Direktori layanan AKMI Untirta akan tampil di sini." />
+        {services.length === 0 ? (
+          <PlaceholderCard label="Direktori layanan AKMI Untirta akan tampil di sini." />
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((service) => (
+              <ServiceCard key={service.id} service={service} />
+            ))}
+          </div>
+        )}
       </Section>
 
       <section className="bg-brand-600 border-y border-zinc-200 dark:border-zinc-800">

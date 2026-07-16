@@ -1,17 +1,18 @@
 # Database — AKMI Untirta Website
 
 Status: Articles + News + Events + Gallery + Profile + Management Structure +
-Perpustakaan complete
+Perpustakaan + Layanan complete
 Last updated: 2026-07-16
 
 ## What's in the database right now
 
 Login/account tables, Articles, News, Events, Gallery, the site Profile
-(About page content), Management Structure (Struktur Pengurus), and
-Perpustakaan (digital library). Other content tables (Services, Schedule,
-Reports) are deliberately **not** created yet — they arrive one at a time
-in later phases, per the project's "one vertical slice at a time" rule. See
-`docs/FEATURES.md` for the full future table list.
+(About page content), Management Structure (Struktur Pengurus),
+Perpustakaan (digital library), and Layanan (services directory). Other
+content tables (Schedule, Reports) are deliberately **not** created yet —
+they arrive one at a time in later phases, per the project's "one vertical
+slice at a time" rule. See `docs/FEATURES.md` for the full future table
+list.
 
 ## Tables (plain-language)
 
@@ -162,6 +163,22 @@ Powers the "Perpustakaan" (digital library) public pages:
 The reader page (`/perpustakaan/buku/[slug]/baca`) shows the PDF using the
 browser's own built-in PDF viewer, not a paid third-party flipbook service —
 see docs/DECISIONS.md for why.
+
+### `services`
+
+Powers the "Layanan" directory page and the homepage's "Layanan" section —
+the simplest content table in the project:
+
+| Field          | Purpose                                                             |
+| -------------- | ------------------------------------------------------------------- |
+| `name`         | Service name.                                                       |
+| `description`  | Plain text description.                                             |
+| `link`         | Optional external or internal URL (e.g. a WhatsApp number or form). |
+| `status`       | `DRAFT` (not publicly visible) or `PUBLISHED`.                      |
+| `displayOrder` | Controls listing order; new services are appended at the end.       |
+
+Unlike other content types, there's no slug and no individual detail
+page — services only ever appear as cards in a directory listing.
 
 ### `gallery_albums`
 

@@ -301,6 +301,41 @@ async function main() {
     },
   });
   console.log("Seeded book:", sampleBook.title);
+
+  const services = [
+    {
+      id: "service-konsultasi-keagamaan",
+      name: "Konsultasi Keagamaan",
+      description:
+        "Layanan konsultasi seputar permasalahan keagamaan bagi mahasiswa Muslim Untirta.",
+      link: null,
+      displayOrder: 0,
+    },
+    {
+      id: "service-kajian-rutin",
+      name: "Kajian Rutin",
+      description:
+        "Kajian keislaman rutin yang terbuka untuk seluruh mahasiswa, diselenggarakan secara berkala.",
+      link: null,
+      displayOrder: 1,
+    },
+    {
+      id: "service-pendampingan-mualaf",
+      name: "Pendampingan Mualaf",
+      description:
+        "Bimbingan dan pendampingan bagi mahasiswa yang baru memeluk Islam.",
+      link: null,
+      displayOrder: 2,
+    },
+  ];
+  for (const service of services) {
+    await prisma.service.upsert({
+      where: { id: service.id },
+      update: {},
+      create: { ...service, status: "PUBLISHED" },
+    });
+  }
+  console.log("Seeded services:", services.length);
 }
 
 main()
