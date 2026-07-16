@@ -132,6 +132,48 @@ async function main() {
     },
   });
   console.log("Seeded past event:", pastEvent.title);
+
+  const sampleAlbum = await prisma.galleryAlbum.upsert({
+    where: { slug: "kajian-rutin-pekanan-2026" },
+    update: {},
+    create: {
+      title: "Kajian Rutin Pekanan 2026",
+      slug: "kajian-rutin-pekanan-2026",
+      description:
+        "Dokumentasi foto contoh untuk menguji fitur Galeri. Foto sesungguhnya akan ditambahkan oleh admin melalui dashboard.",
+      status: "PUBLISHED",
+      eventDate: oneMonthAgo,
+      coverImage: null,
+    },
+  });
+  console.log("Seeded gallery album:", sampleAlbum.title);
+
+  const samplePhotos = [
+    {
+      url: "https://images.unsplash.com/photo-1519452575417-564c1401ecc0?w=800",
+      altText: "Suasana kajian rutin pekanan di masjid kampus",
+      caption: "Peserta kajian rutin pekanan",
+      displayOrder: 0,
+    },
+    {
+      url: "https://images.unsplash.com/photo-1585036156171-384164a8c675?w=800",
+      altText: "Pemateri menyampaikan kajian di depan peserta",
+      caption: "Pemateri kajian",
+      displayOrder: 1,
+    },
+  ];
+  for (const photo of samplePhotos) {
+    const existing = await prisma.galleryImage.findFirst({
+      where: { albumId: sampleAlbum.id, url: photo.url },
+      select: { id: true },
+    });
+    if (!existing) {
+      await prisma.galleryImage.create({
+        data: { ...photo, albumId: sampleAlbum.id },
+      });
+    }
+  }
+  console.log("Seeded gallery photos:", samplePhotos.length);
 }
 
 main()

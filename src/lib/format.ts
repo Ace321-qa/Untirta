@@ -22,3 +22,10 @@ export function toDateTimeLocalValue(date: Date): string {
   const local = new Date(date.getTime() - offset * 60 * 1000);
   return local.toISOString().slice(0, 16);
 }
+
+/** For pre-filling <input type="date"> defaultValue. */
+export function toDateLocalValue(date: Date): string {
+  const offset = date.getTimezoneOffset();
+  const local = new Date(date.getTime() - offset * 60 * 1000);
+  return local.toISOString().slice(0, 10);
+}

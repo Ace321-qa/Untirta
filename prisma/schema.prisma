@@ -131,6 +131,42 @@ model Event {
   @@map("events")
 }
 
+model GalleryAlbum {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?       @db.Text
+  eventDate   DateTime?
+  coverImage  String?
+  // Optional external video (e.g. a YouTube link) shown alongside photos.
+  videoUrl    String?
+  status      ArticleStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  images GalleryImage[]
+
+  @@index([status, eventDate])
+  @@map("gallery_albums")
+}
+
+model GalleryImage {
+  id                 String       @id @default(cuid())
+  albumId            String
+  album              GalleryAlbum @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  url                String
+  // Required, not optional — accessibility requirement (every image needs
+  // meaningful alt text, per docs/PROJECT-VISION.md's accessibility goals).
+  altText            String
+  caption            String?
+  photographerCredit String?
+  displayOrder       Int          @default(0)
+  createdAt          DateTime     @default(now())
+
+  @@index([albumId])
+  @@map("gallery_images")
+}
+
 model NewsCategory {
   id   String @id @default(cuid())
   name String

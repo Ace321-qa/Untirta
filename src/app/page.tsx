@@ -8,6 +8,7 @@ import { PlaceholderCard } from "@/components/home/PlaceholderCard";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 import { NewsCard } from "@/components/news/NewsCard";
 import { EventCard } from "@/components/events/EventCard";
+import { GalleryCard } from "@/components/gallery/GalleryCard";
 import { siteContact } from "@/lib/navigation";
 import { prisma } from "@/lib/prisma";
 
@@ -17,46 +18,58 @@ import { prisma } from "@/lib/prisma";
 export const revalidate = 3600;
 
 export default async function Home() {
-  const [latestArticles, latestNews, upcomingEvents] = await Promise.all([
-    prisma.article.findMany({
-      where: { status: "PUBLISHED" },
-      orderBy: { publishedAt: "desc" },
-      take: 3,
-      select: {
-        slug: true,
-        title: true,
-        excerpt: true,
-        featuredImage: true,
-        publishedAt: true,
-        category: { select: { name: true } },
-      },
-    }),
-    prisma.news.findMany({
-      where: { status: "PUBLISHED" },
-      orderBy: { publishedAt: "desc" },
-      take: 3,
-      select: {
-        slug: true,
-        title: true,
-        excerpt: true,
-        featuredImage: true,
-        publishedAt: true,
-        category: { select: { name: true } },
-      },
-    }),
-    prisma.event.findMany({
-      where: { status: "PUBLISHED", startAt: { gte: new Date() } },
-      orderBy: { startAt: "asc" },
-      take: 3,
-      select: {
-        slug: true,
-        title: true,
-        featuredImage: true,
-        startAt: true,
-        venue: true,
-      },
-    }),
-  ]);
+  const [latestArticles, latestNews, upcomingEvents, featuredAlbums] =
+    await Promise.all([
+      prisma.article.findMany({
+        where: { status: "PUBLISHED" },
+        orderBy: { publishedAt: "desc" },
+        take: 3,
+        select: {
+          slug: true,
+          title: true,
+          excerpt: true,
+          featuredImage: true,
+          publishedAt: true,
+          category: { select: { name: true } },
+        },
+      }),
+      prisma.news.findMany({
+        where: { status: "PUBLISHED" },
+        orderBy: { publishedAt: "desc" },
+        take: 3,
+        select: {
+          slug: true,
+          title: true,
+          excerpt: true,
+          featuredImage: true,
+          publishedAt: true,
+          category: { select: { name: true } },
+        },
+      }),
+      prisma.event.findMany({
+        where: { status: "PUBLISHED", startAt: { gte: new Date() } },
+        orderBy: { startAt: "asc" },
+        take: 3,
+        select: {
+          slug: true,
+          title: true,
+          featuredImage: true,
+          startAt: true,
+          venue: true,
+        },
+      }),
+      prisma.galleryAlbum.findMany({
+        where: { status: "PUBLISHED" },
+        orderBy: [{ eventDate: "desc" }, { createdAt: "desc" }],
+        take: 3,
+        select: {
+          slug: true,
+          title: true,
+          coverImage: true,
+          eventDate: true,
+        },
+      }),
+    ]);
 
   return (
     <>
@@ -151,7 +164,15 @@ export default async function Home() {
         title="Galeri Pilihan"
         viewAllHref="/tentang/galeri"
       >
-        <PlaceholderCard label="Foto kegiatan pilihan akan tampil di sini setelah modul Galeri dibangun." />
+        {featuredAlbums.length === 0 ? (
+          <PlaceholderCard label="Album galeri akan tampil di sini setelah album pertama dipublikasikan." />
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredAlbums.map((album) => (
+              <GalleryCard key={album.slug} album={album} />
+            ))}
+          </div>
+        )}
       </Section>
 
       <Section id="layanan" title="Layanan" viewAllHref="/layanan">

@@ -4,6 +4,17 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-16 — Gallery: fourth content type, album + photo sub-list
+
+- **DECISION.** Gallery is modeled as two tables — `GalleryAlbum` (metadata: title, slug, description, optional event date, optional cover image, optional external video link, DRAFT/PUBLISHED) and `GalleryImage` (one row per photo, always belonging to exactly one album via `onDelete: Cascade`). This is a different shape from Articles/News/Event: instead of one record with one body, an album is a container for a variable-length list of photos managed separately.
+- **DECISION.** `altText` is a **required** field on every `GalleryImage`, not optional like other URL/text fields elsewhere in the schema — a direct accessibility requirement (every image needs meaningful alt text for screen reader users), enforced both in the Zod schema and the database column.
+- **DECISION.** No embedded video player. `videoUrl` is just an external link (e.g. to YouTube), rendered as a plain "Tonton Video" link on the album detail page — consistent with the project's existing pattern of not embedding third-party iframes (avoids extra CSP/privacy complexity for a feature that wasn't explicitly requested as an embed).
+- **DECISION.** Admin workflow is two steps by design: save the album's metadata first (creating its `id`/slug), then add or delete individual photos on that album's edit page. This mirrors how the album detail data actually depends on the album already existing, and keeps each form focused (one photo at a time, with its own alt text/caption/credit) rather than one large unwieldy form.
+- **DECISION.** `displayOrder` on `GalleryImage` controls photo order within an album; new photos are appended at the end (`max(displayOrder) + 1`). No drag-and-drop reordering UI yet — not required for this vertical slice; can be added later if album curation needs finer control.
+- Verified end-to-end with a scripted browser test against live MySQL: seeded published album with photos visible on the public listing and detail pages → `/dashboard/galeri` requires login → create a draft album → confirm hidden from public listing → add a photo with required alt text → publish → confirm the album and its photo (with caption) now appear publicly → delete the photo via the admin edit page → confirm it's gone → confirmed a missing album slug and a missing admin album id both return real 404s.
+
+---
+
 ### 2026-07-16 — Events (Kegiatan): third content type, different shape
 
 - **DECISION.** Event is a structured listing (date/time, venue, registration, quota) rather than long-form content — `description` is still Markdown for flexibility, but the model is otherwise quite different from Article/News: no author/reporter attribution, no category, no tags (none of these were requested for Events in the brief).

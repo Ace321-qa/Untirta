@@ -1,15 +1,15 @@
 # Database — AKMI Untirta Website
 
-Status: Articles + News + Events complete
+Status: Articles + News + Events + Gallery complete
 Last updated: 2026-07-16
 
 ## What's in the database right now
 
-Login/account tables, Articles, News, and Events. Other content tables
-(Gallery, Management Structure, etc.) are deliberately **not** created
-yet — they arrive one at a time in later phases, per the project's "one
-vertical slice at a time" rule. See `docs/FEATURES.md` for the full future
-table list.
+Login/account tables, Articles, News, Events, and Gallery. Other content
+tables (Management Structure, etc.) are deliberately **not** created yet —
+they arrive one at a time in later phases, per the project's "one vertical
+slice at a time" rule. See `docs/FEATURES.md` for the full future table
+list.
 
 ## Tables (plain-language)
 
@@ -101,6 +101,33 @@ category, no tags (none requested for Events in the original brief).
 
 **Note:** "upcoming" vs. "past" isn't a stored field — it's computed by
 comparing `startAt` to the current time whenever the page is rendered.
+
+### `gallery_albums`
+
+A container for a set of photos, plus its own metadata:
+
+| Field           | Purpose                                                                            |
+| --------------- | ---------------------------------------------------------------------------------- |
+| `title`, `slug` | Same pattern as other content — slug stable after creation.                        |
+| `description`   | Optional plain text summary of the album.                                          |
+| `eventDate`     | Optional date the photos are from (date only, no time).                            |
+| `coverImage`    | Optional image URL shown on listing cards.                                         |
+| `videoUrl`      | Optional external video link (e.g. YouTube) — shown as a plain link, not embedded. |
+| `status`        | `DRAFT` (not publicly visible) or `PUBLISHED`.                                     |
+
+### `gallery_images`
+
+One row per photo, always belonging to exactly one album (deleting an album
+deletes its photos too):
+
+| Field                | Purpose                                                                       |
+| -------------------- | ----------------------------------------------------------------------------- |
+| `albumId`            | Which album this photo belongs to.                                            |
+| `url`                | The image URL (not a file upload yet — see docs/DECISIONS.md).                |
+| `altText`            | **Required** — every photo needs meaningful alt text for screen reader users. |
+| `caption`            | Optional short caption shown under the photo.                                 |
+| `photographerCredit` | Optional credit line (e.g. "Foto: Divisi Humas").                             |
+| `displayOrder`       | Controls photo order within the album; new photos are appended at the end.    |
 
 ## A simplification we made on purpose
 
