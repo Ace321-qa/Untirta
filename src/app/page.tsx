@@ -7,11 +7,17 @@ import { Section } from "@/components/home/Section";
 import { PlaceholderCard } from "@/components/home/PlaceholderCard";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 import { NewsCard } from "@/components/news/NewsCard";
+import { EventCard } from "@/components/events/EventCard";
 import { siteContact } from "@/lib/navigation";
 import { prisma } from "@/lib/prisma";
 
+// The "upcoming events" section depends on the current time, not just
+// database writes — revalidate hourly as a backstop alongside the
+// on-demand revalidatePath("/") calls in each content type's save action.
+export const revalidate = 3600;
+
 export default async function Home() {
-  const [latestArticles, latestNews] = await Promise.all([
+  const [latestArticles, latestNews, upcomingEvents] = await Promise.all([
     prisma.article.findMany({
       where: { status: "PUBLISHED" },
       orderBy: { publishedAt: "desc" },
@@ -36,6 +42,18 @@ export default async function Home() {
         featuredImage: true,
         publishedAt: true,
         category: { select: { name: true } },
+      },
+    }),
+    prisma.event.findMany({
+      where: { status: "PUBLISHED", startAt: { gte: new Date() } },
+      orderBy: { startAt: "asc" },
+      take: 3,
+      select: {
+        slug: true,
+        title: true,
+        featuredImage: true,
+        startAt: true,
+        venue: true,
       },
     }),
   ]);
@@ -117,7 +135,15 @@ export default async function Home() {
         title="Kegiatan Mendatang"
         viewAllHref="/kegiatan"
       >
-        <PlaceholderCard label="Kegiatan mendatang akan tampil di sini setelah modul Kegiatan dibangun." />
+        {upcomingEvents.length === 0 ? (
+          <PlaceholderCard label="Kegiatan mendatang akan tampil di sini setelah kegiatan pertama dijadwalkan." />
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {upcomingEvents.map((event) => (
+              <EventCard key={event.slug} event={event} />
+            ))}
+          </div>
+        )}
       </Section>
 
       <Section

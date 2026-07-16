@@ -1,14 +1,15 @@
 # Database — AKMI Untirta Website
 
-Status: Articles + News complete
+Status: Articles + News + Events complete
 Last updated: 2026-07-16
 
 ## What's in the database right now
 
-Login/account tables, Articles, and News. Other content tables (Event,
-Gallery, Management Structure, etc.) are deliberately **not** created yet —
-they arrive one at a time in later phases, per the project's "one vertical
-slice at a time" rule. See `docs/FEATURES.md` for the full future table list.
+Login/account tables, Articles, News, and Events. Other content tables
+(Gallery, Management Structure, etc.) are deliberately **not** created
+yet — they arrive one at a time in later phases, per the project's "one
+vertical slice at a time" rule. See `docs/FEATURES.md` for the full future
+table list.
 
 ## Tables (plain-language)
 
@@ -80,6 +81,26 @@ No tags for News — only a single optional category.
 
 Simple lookup table, pre-seeded (Kampus, Organisasi), same pattern as
 `article_categories`.
+
+### `events`
+
+A structured listing rather than long-form content — no author, no
+category, no tags (none requested for Events in the original brief).
+
+| Field                  | Purpose                                                                              |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| `title`, `slug`        | Same pattern as Articles/News — slug stable after creation.                          |
+| `description`          | Markdown, rendered safely.                                                           |
+| `startAt` / `endAt`    | Combined date+time fields (not separate date/time columns). `endAt` is optional.     |
+| `venue`, `mapsUrl`     | Where it's happening, plus an optional Google Maps link.                             |
+| `organizer`            | Free text (e.g. "Divisi Kaderisasi") — not linked to a Division table yet.           |
+| `registrationLink`     | External URL (e.g. a Google Form) — **no built-in ticketing or payment**, per scope. |
+| `registrationDeadline` | Optional; the public detail page disables the registration button after this time.   |
+| `participantQuota`     | Informational only, not enforced against actual signups.                             |
+| `documentUrl`          | Optional downloadable document (URL only, same pattern as featured images).          |
+
+**Note:** "upcoming" vs. "past" isn't a stored field — it's computed by
+comparing `startAt` to the current time whenever the page is rendered.
 
 ## A simplification we made on purpose
 

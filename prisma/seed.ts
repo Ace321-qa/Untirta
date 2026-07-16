@@ -96,6 +96,42 @@ async function main() {
     },
   });
   console.log("Seeded news:", sampleNews.title);
+
+  const oneWeekFromNow = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+  const upcomingEvent = await prisma.event.upsert({
+    where: { slug: "kajian-rutin-pekanan" },
+    update: {},
+    create: {
+      title: "Kajian Rutin Pekanan",
+      slug: "kajian-rutin-pekanan",
+      description:
+        "Kajian rutin pekanan AKMI Untirta terbuka untuk seluruh mahasiswa Muslim Untirta. Konten sesungguhnya akan ditambahkan oleh admin melalui dashboard.",
+      status: "PUBLISHED",
+      startAt: oneWeekFromNow,
+      venue: "Masjid Kampus Untirta",
+      organizer: "Divisi Kaderisasi AKMI Untirta",
+      participantQuota: 100,
+    },
+  });
+  console.log("Seeded upcoming event:", upcomingEvent.title);
+
+  const pastEvent = await prisma.event.upsert({
+    where: { slug: "seminar-kemuslimahan" },
+    update: {},
+    create: {
+      title: "Seminar Kemuslimahan",
+      slug: "seminar-kemuslimahan",
+      description:
+        "Seminar kemuslimahan yang telah diselenggarakan AKMI Untirta. Konten sesungguhnya akan ditambahkan oleh admin melalui dashboard.",
+      status: "PUBLISHED",
+      startAt: oneMonthAgo,
+      venue: "Aula Fakultas",
+      organizer: "Divisi Kemuslimahan AKMI Untirta",
+    },
+  });
+  console.log("Seeded past event:", pastEvent.title);
 }
 
 main()

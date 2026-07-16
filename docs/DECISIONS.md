@@ -4,6 +4,17 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-16 — Events (Kegiatan): third content type, different shape
+
+- **DECISION.** Event is a structured listing (date/time, venue, registration, quota) rather than long-form content — `description` is still Markdown for flexibility, but the model is otherwise quite different from Article/News: no author/reporter attribution, no category, no tags (none of these were requested for Events in the brief).
+- **DECISION.** `startAt`/`endAt` are single `DateTime` fields (date + time combined) rather than separate date/start-time/end-time fields — simpler to model and query, and naturally supports multi-day events.
+- **DECISION.** No ticketing or payment (explicitly out of scope per the brief) — `registrationLink` is just an external URL (e.g. a Google Form), `participantQuota` is informational only, not enforced.
+- **DECISION.** "Upcoming" vs. "past" is computed from `startAt` vs. the current time at request time, not a stored field — kept as two sections on one `/kegiatan` page rather than a tab/filter, for simplicity.
+- **BUG CAUGHT AND FIXED before reaching the user:** the upcoming/past split (and the homepage's "upcoming events" section) both statically render at build time by default in Next.js, since a `new Date()` call inside a Prisma query doesn't automatically opt a route out of static generation the way `cookies()`/`headers()` do. Without a fix, an event could sit in the wrong section for a long time after its start time passed, with no database write ever happening to trigger the existing `revalidatePath` calls. Added `export const revalidate = 3600` (hourly) to both `/kegiatan` and `/` as a time-based backstop alongside the on-demand revalidation on save.
+- Verified end-to-end with a scripted browser test against live MySQL: seeded upcoming/past events show correctly split on both admin and public pages → create a draft with registration link/quota/venue → confirm hidden from public pages → publish → confirm it appears in the upcoming section on the listing, homepage, and detail page with all fields (date/time, venue, organizer, quota, registration button) rendering correctly → confirmed nested dashboard routes stay protected → confirmed a missing event slug returns a real 404.
+
+---
+
 ### 2026-07-16 — News: second content type, built on the Articles pattern
 
 - **DECISION.** News reuses the Articles pattern (Markdown body, URL-only featured image, DRAFT/PUBLISHED, slug stable after creation) but adds the fields that the brief calls out as distinct to News: `reporterId` (required, defaults to the logged-in user), `editorId` (optional), `eventDate`, `location`, `sourceAttribution`. No tags for News (only the brief's original entity list — `News`, `NewsCategory` — no `NewsTag`).

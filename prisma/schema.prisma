@@ -99,6 +99,38 @@ model Article {
   @@map("articles")
 }
 
+// No ticketing/payment per project scope — registration is just an
+// external link (e.g. a Google Form), tracked here only as a URL + quota.
+model Event {
+  id            String        @id @default(cuid())
+  title         String
+  slug          String        @unique
+  // Markdown source, rendered safely (no raw HTML) on the public pages.
+  description   String        @db.LongText
+  // Plain image URL for now — real file upload comes with the dedicated
+  // media-handling feature later. See docs/DECISIONS.md.
+  featuredImage String?
+  status        ArticleStatus @default(DRAFT)
+
+  startAt DateTime
+  endAt   DateTime?
+
+  venue   String?
+  mapsUrl String?
+
+  organizer            String?
+  registrationLink     String?
+  registrationDeadline DateTime?
+  participantQuota     Int?
+  documentUrl          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, startAt])
+  @@map("events")
+}
+
 model NewsCategory {
   id   String @id @default(cuid())
   name String
