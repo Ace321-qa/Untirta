@@ -47,6 +47,12 @@ export default async function DashboardPage() {
         >
           Kelola Galeri
         </Link>
+        <Link
+          href="/dashboard/struktur"
+          className="bg-brand-600 shadow-brand-sm hover:bg-brand-700 w-fit rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-colors"
+        >
+          Kelola Struktur Pengurus
+        </Link>
       </div>
 
       <form action={logoutAction}>

@@ -148,6 +148,55 @@ model SiteProfile {
   @@map("site_profile")
 }
 
+// "Struktur Pengurus" (Management Structure), organized by period so past
+// leadership stays on record instead of being overwritten each year.
+model ManagementPeriod {
+  id        String  @id @default(cuid())
+  label     String // e.g. "2025/2026"
+  startYear Int
+  endYear   Int
+  // Only one period should be active at a time (enforced in application
+  // code, not the database) — the public page shows the active period by
+  // default, with past periods still browsable.
+  isActive  Boolean @default(false)
+
+  divisions Division[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@map("management_periods")
+}
+
+model Division {
+  id           String           @id @default(cuid())
+  periodId     String
+  period       ManagementPeriod @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  name         String // e.g. "Pengurus Inti", "Divisi Kaderisasi"
+  displayOrder Int              @default(0)
+
+  officers Officer[]
+
+  @@index([periodId])
+  @@map("divisions")
+}
+
+model Officer {
+  id           String   @id @default(cuid())
+  divisionId   String
+  division     Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  name         String
+  position     String // e.g. "Ketua Umum", "Anggota"
+  // Plain image URL for now — real file upload comes with the dedicated
+  // media-handling feature later. See docs/DECISIONS.md.
+  photo        String?
+  displayOrder Int      @default(0)
+
+  @@index([divisionId])
+  @@map("officers")
+}
+
 model GalleryAlbum {
   id          String        @id @default(cuid())
   title       String

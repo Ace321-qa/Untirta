@@ -1,15 +1,17 @@
 # Database — AKMI Untirta Website
 
-Status: Articles + News + Events + Gallery + Profile complete
+Status: Articles + News + Events + Gallery + Profile + Management Structure
+complete
 Last updated: 2026-07-16
 
 ## What's in the database right now
 
-Login/account tables, Articles, News, Events, Gallery, and the site
-Profile (About page content). Other content tables (Management Structure,
-etc.) are deliberately **not** created yet — they arrive one at a time in
-later phases, per the project's "one vertical slice at a time" rule. See
-`docs/FEATURES.md` for the full future table list.
+Login/account tables, Articles, News, Events, Gallery, the site Profile
+(About page content), and Management Structure (Struktur Pengurus). Other
+content tables (Perpustakaan, Services, Schedule, Reports) are deliberately
+**not** created yet — they arrive one at a time in later phases, per the
+project's "one vertical slice at a time" rule. See `docs/FEATURES.md` for
+the full future table list.
 
 ## Tables (plain-language)
 
@@ -119,6 +121,29 @@ category, no tags (none requested for Events in the original brief).
 
 **Note:** "upcoming" vs. "past" isn't a stored field — it's computed by
 comparing `startAt` to the current time whenever the page is rendered.
+
+### `management_periods`, `divisions`, `officers`
+
+Powers the "Struktur Pengurus" (Management Structure) public page — a
+three-level hierarchy so past leadership stays on record instead of being
+overwritten each year:
+
+| Table                | Field                   | Purpose                                                                  |
+| -------------------- | ----------------------- | ------------------------------------------------------------------------ |
+| `management_periods` | `label`                 | e.g. "2025/2026".                                                        |
+| `management_periods` | `startYear` / `endYear` | Used for sorting periods newest-first.                                   |
+| `management_periods` | `isActive`              | Only one period is active at a time; the public page defaults to it.     |
+| `divisions`          | `periodId`              | Which period this division belongs to.                                   |
+| `divisions`          | `name`                  | e.g. "Pengurus Inti", "Divisi Kaderisasi" — free text, not a fixed list. |
+| `officers`           | `divisionId`            | Which division this person belongs to.                                   |
+| `officers`           | `name`, `position`      | e.g. "Ahmad Fauzan", "Ketua Umum".                                       |
+| `officers`           | `photo`                 | Optional image URL (not a file upload yet — see docs/DECISIONS.md).      |
+
+Deleting a period deletes its divisions, and deleting a division deletes
+its officers (cascade) — there's no orphaned data to clean up manually.
+The public page (`/tentang/struktur`) shows the active period by default,
+with a period-switcher (`?periode=<id>`) to browse past ones once more than
+one exists.
 
 ### `gallery_albums`
 

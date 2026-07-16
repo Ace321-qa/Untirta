@@ -191,6 +191,78 @@ async function main() {
     },
   });
   console.log("Seeded site profile:", siteProfile.id);
+
+  const activePeriod = await prisma.managementPeriod.upsert({
+    where: { id: "period-2025-2026" },
+    update: {},
+    create: {
+      id: "period-2025-2026",
+      label: "2025/2026",
+      startYear: 2025,
+      endYear: 2026,
+      isActive: true,
+    },
+  });
+  console.log("Seeded management period:", activePeriod.label);
+
+  const intiDivision = await prisma.division.upsert({
+    where: { id: "division-inti-2025-2026" },
+    update: {},
+    create: {
+      id: "division-inti-2025-2026",
+      periodId: activePeriod.id,
+      name: "Pengurus Inti",
+      displayOrder: 0,
+    },
+  });
+  const kaderisasiDivision = await prisma.division.upsert({
+    where: { id: "division-kaderisasi-2025-2026" },
+    update: {},
+    create: {
+      id: "division-kaderisasi-2025-2026",
+      periodId: activePeriod.id,
+      name: "Divisi Kaderisasi",
+      displayOrder: 1,
+    },
+  });
+  console.log(
+    "Seeded divisions:",
+    intiDivision.name,
+    ",",
+    kaderisasiDivision.name,
+  );
+
+  const officers = [
+    {
+      id: "officer-ketua-2025-2026",
+      divisionId: intiDivision.id,
+      name: "Ahmad Fauzan",
+      position: "Ketua Umum",
+      displayOrder: 0,
+    },
+    {
+      id: "officer-sekretaris-2025-2026",
+      divisionId: intiDivision.id,
+      name: "Siti Nur Halimah",
+      position: "Sekretaris Umum",
+      displayOrder: 1,
+    },
+    {
+      id: "officer-kaderisasi-2025-2026",
+      divisionId: kaderisasiDivision.id,
+      name: "Muhammad Rizki",
+      position: "Kepala Divisi Kaderisasi",
+      displayOrder: 0,
+    },
+  ];
+  for (const officer of officers) {
+    await prisma.officer.upsert({
+      where: { id: officer.id },
+      update: {},
+      create: officer,
+    });
+  }
+  console.log("Seeded officers:", officers.length);
 }
 
 main()
