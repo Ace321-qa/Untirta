@@ -6,23 +6,39 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/home/Section";
 import { PlaceholderCard } from "@/components/home/PlaceholderCard";
 import { ArticleCard } from "@/components/articles/ArticleCard";
+import { NewsCard } from "@/components/news/NewsCard";
 import { siteContact } from "@/lib/navigation";
 import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
-  const latestArticles = await prisma.article.findMany({
-    where: { status: "PUBLISHED" },
-    orderBy: { publishedAt: "desc" },
-    take: 3,
-    select: {
-      slug: true,
-      title: true,
-      excerpt: true,
-      featuredImage: true,
-      publishedAt: true,
-      category: { select: { name: true } },
-    },
-  });
+  const [latestArticles, latestNews] = await Promise.all([
+    prisma.article.findMany({
+      where: { status: "PUBLISHED" },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+      select: {
+        slug: true,
+        title: true,
+        excerpt: true,
+        featuredImage: true,
+        publishedAt: true,
+        category: { select: { name: true } },
+      },
+    }),
+    prisma.news.findMany({
+      where: { status: "PUBLISHED" },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+      select: {
+        slug: true,
+        title: true,
+        excerpt: true,
+        featuredImage: true,
+        publishedAt: true,
+        category: { select: { name: true } },
+      },
+    }),
+  ]);
 
   return (
     <>
@@ -85,7 +101,15 @@ export default async function Home() {
       </Section>
 
       <Section id="berita-terbaru" title="Berita Terbaru" viewAllHref="/berita">
-        <PlaceholderCard label="Berita terbaru akan tampil di sini setelah modul Berita dibangun." />
+        {latestNews.length === 0 ? (
+          <PlaceholderCard label="Berita terbaru akan tampil di sini setelah berita pertama dipublikasikan." />
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {latestNews.map((news) => (
+              <NewsCard key={news.slug} news={news} />
+            ))}
+          </div>
+        )}
       </Section>
 
       <Section

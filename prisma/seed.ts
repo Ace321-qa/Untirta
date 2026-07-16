@@ -57,6 +57,45 @@ async function main() {
     },
   });
   console.log("Seeded article:", sampleArticle.title);
+
+  const newsCategories = [
+    { name: "Kampus", slug: "kampus" },
+    { name: "Organisasi", slug: "organisasi" },
+  ];
+  for (const category of newsCategories) {
+    await prisma.newsCategory.upsert({
+      where: { slug: category.slug },
+      update: {},
+      create: category,
+    });
+  }
+  console.log(
+    "Seeded news categories:",
+    newsCategories.map((c) => c.name).join(", "),
+  );
+
+  const organisasiCategory = await prisma.newsCategory.findUniqueOrThrow({
+    where: { slug: "organisasi" },
+  });
+
+  const sampleNews = await prisma.news.upsert({
+    where: { slug: "akmi-untirta-gelar-rapat-kerja-tahunan" },
+    update: {},
+    create: {
+      title: "AKMI Untirta Gelar Rapat Kerja Tahunan",
+      slug: "akmi-untirta-gelar-rapat-kerja-tahunan",
+      excerpt:
+        "Pengurus AKMI Untirta menggelar rapat kerja tahunan untuk menyusun program kerja periode ini.",
+      body: "Ini adalah berita contoh untuk menguji fitur Berita. Konten sesungguhnya akan ditambahkan oleh admin melalui dashboard.",
+      status: "PUBLISHED",
+      publishedAt: new Date(),
+      eventDate: new Date(),
+      location: "Sekretariat AKMI Untirta",
+      reporterId: admin.id,
+      categoryId: organisasiCategory.id,
+    },
+  });
+  console.log("Seeded news:", sampleNews.title);
 }
 
 main()

@@ -40,9 +40,11 @@ model User {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-  articles Article[]
+  accounts     Account[]
+  sessions     Session[]
+  articles     Article[]
+  reportedNews News[]    @relation("NewsReporter")
+  editedNews   News[]    @relation("NewsEditor")
 
   @@map("users")
 }
@@ -95,6 +97,48 @@ model Article {
   @@index([categoryId])
   @@index([status, publishedAt])
   @@map("articles")
+}
+
+model NewsCategory {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+  news News[]
+
+  @@map("news_categories")
+}
+
+model News {
+  id                String        @id @default(cuid())
+  title             String
+  slug              String        @unique
+  excerpt           String?       @db.VarChar(500)
+  // Markdown source, rendered safely (no raw HTML) on the public pages.
+  body              String        @db.LongText
+  // Plain image URL for now — real file upload comes with the dedicated
+  // media-handling feature later. See docs/DECISIONS.md.
+  featuredImage     String?
+  status            ArticleStatus @default(DRAFT)
+  publishedAt       DateTime?
+  // News-specific fields (what distinguishes News from Articles).
+  eventDate         DateTime?
+  location          String?
+  sourceAttribution String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  reporterId String
+  reporter   User          @relation("NewsReporter", fields: [reporterId], references: [id])
+  editorId   String?
+  editor     User?         @relation("NewsEditor", fields: [editorId], references: [id])
+  categoryId String?
+  category   NewsCategory? @relation(fields: [categoryId], references: [id])
+
+  @@index([reporterId])
+  @@index([editorId])
+  @@index([categoryId])
+  @@index([status, publishedAt])
+  @@map("news")
 }
 
 // Auth.js (Phase 5) needs Account/Session/VerificationToken in this shape.

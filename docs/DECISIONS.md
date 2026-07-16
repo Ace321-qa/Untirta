@@ -4,6 +4,14 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-16 — News: second content type, built on the Articles pattern
+
+- **DECISION.** News reuses the Articles pattern (Markdown body, URL-only featured image, DRAFT/PUBLISHED, slug stable after creation) but adds the fields that the brief calls out as distinct to News: `reporterId` (required, defaults to the logged-in user), `editorId` (optional), `eventDate`, `location`, `sourceAttribution`. No tags for News (only the brief's original entity list — `News`, `NewsCategory` — no `NewsTag`).
+- **DECISION.** `reporter` and `editor` are separate relations to `User` (Prisma named relations `NewsReporter`/`NewsEditor`), since a news item can have both a person who reported it and a separate person who edited it — distinct from Articles, which only has one author.
+- Verified end-to-end with a scripted browser test against live MySQL, same rigor as Articles: seeded news visible in admin list → create a draft with event date/location/source → confirm hidden from public pages → publish → confirm visible on listing, homepage, and detail page with all News-specific fields (event date, location, source attribution, reporter name) rendering correctly → confirmed nested `/dashboard/berita/*` routes stay protected → confirmed a missing news slug returns a real 404. No bugs found this time (the Prisma tags issue from Articles doesn't apply here since News has no tags).
+
+---
+
 ### 2026-07-15 — Phase 4: Articles, first complete vertical slice
 
 - **DECISION.** Article body is **Markdown**, not a full WYSIWYG rich-text editor. Rendered with `react-markdown` + `remark-gfm`, styled with the `@tailwindcss/typography` plugin. Deliberately simpler than integrating a WYSIWYG editor (TipTap/Slate) — Markdown covers headings, bold/italic, lists, links, and tables, and `react-markdown`'s default (no `rehype-raw`) never executes raw HTML from the source, which is also a meaningful XSS-safety default, not just a scope-reduction choice.

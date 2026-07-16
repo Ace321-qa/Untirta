@@ -1,14 +1,14 @@
 # Database — AKMI Untirta Website
 
-Status: Phase 4 (Articles) complete
-Last updated: 2026-07-15
+Status: Articles + News complete
+Last updated: 2026-07-16
 
 ## What's in the database right now
 
-Login/account tables (Phase 3) plus Articles (Phase 4). Other content tables
-(News, Event, Gallery, etc.) are deliberately **not** created yet — they
-arrive one at a time in later phases, per the project's "one vertical slice
-at a time" rule. See `docs/FEATURES.md` for the full future table list.
+Login/account tables, Articles, and News. Other content tables (Event,
+Gallery, Management Structure, etc.) are deliberately **not** created yet —
+they arrive one at a time in later phases, per the project's "one vertical
+slice at a time" rule. See `docs/FEATURES.md` for the full future table list.
 
 ## Tables (plain-language)
 
@@ -60,6 +60,26 @@ One row per article, in either state:
 Simple lookup tables for organizing articles. Categories are pre-seeded (no
 admin UI to manage them yet); tags are created on the fly when an admin types
 a new tag name while saving an article.
+
+### `news`
+
+Same shape as `articles` (title, slug, excerpt, Markdown body, featured
+image, status, publishedAt), plus fields specific to News:
+
+| Field               | Purpose                                                               |
+| ------------------- | --------------------------------------------------------------------- |
+| `reporterId`        | Who reported the news (required, defaults to whoever creates it).     |
+| `editorId`          | Who edited it, if anyone (optional).                                  |
+| `eventDate`         | When the reported event happened, if relevant (optional).             |
+| `location`          | Where the event happened, if relevant (optional).                     |
+| `sourceAttribution` | Credit for an external source, if the news references one (optional). |
+
+No tags for News — only a single optional category.
+
+### `news_categories`
+
+Simple lookup table, pre-seeded (Kampus, Organisasi), same pattern as
+`article_categories`.
 
 ## A simplification we made on purpose
 
