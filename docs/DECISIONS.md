@@ -4,6 +4,15 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-16 — Jadwal (Schedule): recurring weekly agenda, distinct from Kegiatan
+
+- **DECISION.** `ScheduleItem` models a **recurring weekly** schedule (e.g. "Kajian Tafsir — Senin, 19:00, Masjid Kampus"), not one-off dated events — that's already `Event`'s job. The nav lists "Jadwal" and "Kegiatan" as two separate items, and a weekly kajian timetable is the natural complement to Kegiatan's one-off activities, so `ScheduleItem` has a `dayOfWeek` enum instead of a specific calendar date.
+- **DECISION.** `startTime`/`endTime` are plain `String` fields (`"HH:MM"`, validated by a regex in the Zod schema) rather than a `DateTime`/`Time` column — since these aren't tied to any specific calendar date, a real date/time type would add timezone-handling complexity for no benefit. The admin form still uses native `<input type="time">` for a proper time-picker UX; only the stored representation is a plain string.
+- **DECISION.** The public `/jadwal` page renders a **list view grouped by day** (Senin → Minggu), not a full month calendar grid. `docs/FEATURES.md` described this module as "Calendar (month/list view)" without committing to one — a grouped agenda list is simpler to build correctly, reads well on mobile, and fits a weekly-recurring schedule better than a month grid (which implies specific dates, not weekly recurrence). A real calendar grid can be added later if ever needed for Kegiatan-style dated items.
+- Verified end-to-end with a scripted browser test against live MySQL: seeded published items render on `/jadwal`, correctly grouped under their day headings → `/dashboard/jadwal` requires login → create a draft item → confirm hidden from the public page → edit it to publish → confirm it now appears under the correct day heading with its time and location → confirmed a missing admin schedule item id returns a real 404.
+
+---
+
 ### 2026-07-16 — Layanan (Services): a directory listing, not a full content type
 
 - **DECISION.** `Service` is deliberately simpler than Articles/News/Events/Gallery/Books — no slug, no individual detail page, no category. `docs/FEATURES.md`'s scope for this module is just a "Services directory," so the model is name + description + an optional external/internal link + DRAFT/PUBLISHED + `displayOrder`. Adding a slug or detail route now would be speculative — nothing in the brief asks for one, and it's easy to add later if a service ever needs its own page.

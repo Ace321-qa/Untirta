@@ -336,6 +336,44 @@ async function main() {
     });
   }
   console.log("Seeded services:", services.length);
+
+  const scheduleItems = [
+    {
+      id: "schedule-kajian-tafsir",
+      title: "Kajian Tafsir",
+      dayOfWeek: "SENIN" as const,
+      startTime: "19:00",
+      endTime: "21:00",
+      location: "Masjid Kampus Untirta",
+      displayOrder: 0,
+    },
+    {
+      id: "schedule-halaqah-quran",
+      title: "Halaqah Al-Qur'an",
+      dayOfWeek: "RABU" as const,
+      startTime: "16:00",
+      endTime: "17:30",
+      location: "Sekretariat AKMI Untirta",
+      displayOrder: 1,
+    },
+    {
+      id: "schedule-kajian-fiqih",
+      title: "Kajian Fiqih Wanita",
+      dayOfWeek: "JUMAT" as const,
+      startTime: "15:30",
+      endTime: "17:00",
+      location: "Aula Fakultas",
+      displayOrder: 2,
+    },
+  ];
+  for (const item of scheduleItems) {
+    await prisma.scheduleItem.upsert({
+      where: { id: item.id },
+      update: {},
+      create: { ...item, status: "PUBLISHED" },
+    });
+  }
+  console.log("Seeded schedule items:", scheduleItems.length);
 }
 
 main()

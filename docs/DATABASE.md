@@ -1,18 +1,18 @@
 # Database — AKMI Untirta Website
 
 Status: Articles + News + Events + Gallery + Profile + Management Structure +
-Perpustakaan + Layanan complete
+Perpustakaan + Layanan + Jadwal complete
 Last updated: 2026-07-16
 
 ## What's in the database right now
 
 Login/account tables, Articles, News, Events, Gallery, the site Profile
 (About page content), Management Structure (Struktur Pengurus),
-Perpustakaan (digital library), and Layanan (services directory). Other
-content tables (Schedule, Reports) are deliberately **not** created yet —
-they arrive one at a time in later phases, per the project's "one vertical
-slice at a time" rule. See `docs/FEATURES.md` for the full future table
-list.
+Perpustakaan (digital library), Layanan (services directory), and Jadwal
+(recurring weekly schedule). Other content tables (Reports) are
+deliberately **not** created yet — they arrive one at a time in later
+phases, per the project's "one vertical slice at a time" rule. See
+`docs/FEATURES.md` for the full future table list.
 
 ## Tables (plain-language)
 
@@ -179,6 +179,25 @@ the simplest content table in the project:
 
 Unlike other content types, there's no slug and no individual detail
 page — services only ever appear as cards in a directory listing.
+
+### `schedule_items`
+
+Powers the "Jadwal" page — a **recurring weekly** schedule (e.g. a kajian
+timetable), distinct from `events` which covers one-off activities with
+their own specific date:
+
+| Field                   | Purpose                                                                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `title`                 | Name of the recurring activity (e.g. "Kajian Tafsir").                                                                               |
+| `dayOfWeek`             | One fixed choice: `SENIN` through `MINGGU`.                                                                                          |
+| `startTime` / `endTime` | Plain `"HH:MM"` text (not a date/time column) — always the same time every week, not tied to a specific date. `endTime` is optional. |
+| `location`              | Optional location text.                                                                                                              |
+| `description`           | Optional extra detail.                                                                                                               |
+| `status`                | `DRAFT` (not publicly visible) or `PUBLISHED`.                                                                                       |
+| `displayOrder`          | Controls ordering within a day; new items are appended at the end.                                                                   |
+
+The public page groups items by day (Senin → Minggu) as a list, not a
+month calendar grid — see docs/DECISIONS.md.
 
 ### `gallery_albums`
 
