@@ -4,6 +4,16 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-16 — Perpustakaan (Digital Library): browser-native PDF reader, no new vendor or dependency
+
+- **DECISION.** The reader page (`/perpustakaan/buku/[slug]/baca`) embeds the book's PDF in a plain `<iframe src={fileUrl}>` and relies on the browser's own built-in PDF viewer — not a "flipbook" third-party embed service, and not a new dependency like PDF.js. `docs/FEATURES.md` §3 explicitly listed both options as "to be finalized" — this is the simplest one that works today with zero new packages and zero vendor lock-in, consistent with the project's no-copying-the-reference-site rule (ldksyah.id likely uses a flipbook vendor; this deliberately doesn't).
+- **DECISION.** `fileUrl` is a plain URL, same pattern as `featuredImage`/`documentUrl` elsewhere — no file upload yet (deferred, see the Articles decision on media handling). If there's no `fileUrl`, the "Baca Buku" button simply doesn't render on the detail page, and the reader route itself 404s directly rather than showing a broken/empty page.
+- **DECISION.** Added a `BookCategory` lookup table, matching the `ArticleCategory`/`NewsCategory` pattern (pre-seeded, no admin management UI yet) rather than a free-text field — keeps the same reusable-dropdown convention used everywhere else in the schema.
+- **DECISION.** No `publishedAt` field like Articles/News — a book's public visibility is controlled purely by `status` (DRAFT/PUBLISHED), since "when was this book added to the library" isn't a piece of information the brief asked for, unlike an article's publish date.
+- Verified end-to-end with a scripted browser test against live MySQL: seeded published book with a working PDF `fileUrl` renders on the public listing, detail, and reader pages → `/dashboard/perpustakaan` requires login → create a draft book (no file) → confirm hidden from public listing → edit it to add a `fileUrl` and publish → confirm it's now visible publicly with a working "Baca Buku" button and iframe reader → confirmed a missing book slug, a missing book's reader page, and a missing admin book id all return real 404s.
+
+---
+
 ### 2026-07-16 — Struktur Pengurus (Management Structure): three-level hierarchy, period-scoped
 
 - **DECISION.** Modeled as three tables — `ManagementPeriod` → `Division` → `Officer` — matching the brief's entity list exactly (`ManagementPeriod`, `Division`, `Officer`). A period ("2025/2026") contains divisions ("Pengurus Inti", "Divisi Kaderisasi"), each of which contains officers (name + position + optional photo). This is one level deeper than Gallery's album→photo pattern, but follows the same "save the parent first, then manage children on its edit page" admin workflow.

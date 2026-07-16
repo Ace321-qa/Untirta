@@ -263,6 +263,44 @@ async function main() {
     });
   }
   console.log("Seeded officers:", officers.length);
+
+  const bookCategories = [
+    { name: "Aqidah", slug: "aqidah" },
+    { name: "Fiqih", slug: "fiqih" },
+    { name: "Sirah Nabawiyah", slug: "sirah-nabawiyah" },
+  ];
+  for (const category of bookCategories) {
+    await prisma.bookCategory.upsert({
+      where: { slug: category.slug },
+      update: {},
+      create: category,
+    });
+  }
+  console.log(
+    "Seeded book categories:",
+    bookCategories.map((c) => c.name).join(", "),
+  );
+
+  const aqidahCategory = await prisma.bookCategory.findUniqueOrThrow({
+    where: { slug: "aqidah" },
+  });
+
+  const sampleBook = await prisma.book.upsert({
+    where: { slug: "pengantar-aqidah-islam" },
+    update: {},
+    create: {
+      title: "Pengantar Aqidah Islam",
+      slug: "pengantar-aqidah-islam",
+      author: "Tim Penulis AKMI Untirta",
+      description:
+        "Buku contoh untuk menguji fitur Perpustakaan. Deskripsi sesungguhnya akan ditambahkan oleh admin melalui dashboard.",
+      status: "PUBLISHED",
+      fileUrl:
+        "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+      categoryId: aqidahCategory.id,
+    },
+  });
+  console.log("Seeded book:", sampleBook.title);
 }
 
 main()

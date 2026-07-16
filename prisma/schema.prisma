@@ -197,6 +197,39 @@ model Officer {
   @@map("officers")
 }
 
+model BookCategory {
+  id    String @id @default(cuid())
+  name  String
+  slug  String @unique
+  books Book[]
+
+  @@map("book_categories")
+}
+
+// Digital library (Perpustakaan). No file upload yet — fileUrl is a plain
+// PDF URL, rendered on the reader page via the browser's built-in PDF
+// viewer (an <iframe>), not a third-party flipbook vendor or a new
+// dependency like PDF.js. See docs/DECISIONS.md.
+model Book {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  author      String
+  description String        @db.Text
+  coverImage  String?
+  fileUrl     String?
+  status      ArticleStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  categoryId String?
+  category   BookCategory? @relation(fields: [categoryId], references: [id])
+
+  @@index([categoryId])
+  @@index([status])
+  @@map("books")
+}
+
 model GalleryAlbum {
   id          String        @id @default(cuid())
   title       String
