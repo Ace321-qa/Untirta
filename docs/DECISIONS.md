@@ -4,6 +4,15 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-16 — About/Profil: first singleton content, not a full StaticPage system
+
+- **DECISION.** `SiteProfile` is a **singleton table** — always exactly one row, with a fixed id `"singleton"` rather than a generated cuid. The admin edit page (`/dashboard/profil`) has no list or create step, just one form that always edits that one row (`upsert` by the fixed id). This is simpler than a generic multi-page `StaticPage` system (mentioned as a possibility in `docs/FEATURES.md`) and matches the actual current need — one "Tentang Kami" page, not an arbitrary number of static pages.
+- **DECISION.** `description` and `vision` are plain text (rendered as-is), while `mission` and `values` are Markdown (rendered with `react-markdown`/`remark-gfm`, same safe-by-default pattern as Article/News/Event bodies) — because Misi and Nilai-Nilai are naturally lists (numbered steps, bullet points) and Markdown is the simplest way to let the admin format that without a rich-text editor.
+- **DECISION.** The seeded placeholder text is the same original wording already drafted and clearly labeled as a placeholder in `docs/PROJECT-VISION.md` §2 (not copied from any external source) — the admin can now replace it for real through the dashboard instead of needing a code change.
+- Verified end-to-end with a scripted browser test against live MySQL: public `/tentang` renders the seeded description/vision/mission/values → `/dashboard/profil` requires login → edit form is prefilled with the current values → saving shows a success message and updates the public page immediately (no separate publish step, since this content has no draft/published state) → whitespace-only input is rejected by server-side validation even though the client-side `required` attribute alone wouldn't catch it.
+
+---
+
 ### 2026-07-16 — Gallery: fourth content type, album + photo sub-list
 
 - **DECISION.** Gallery is modeled as two tables — `GalleryAlbum` (metadata: title, slug, description, optional event date, optional cover image, optional external video link, DRAFT/PUBLISHED) and `GalleryImage` (one row per photo, always belonging to exactly one album via `onDelete: Cascade`). This is a different shape from Articles/News/Event: instead of one record with one body, an album is a container for a variable-length list of photos managed separately.

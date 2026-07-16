@@ -1,15 +1,15 @@
 # Database — AKMI Untirta Website
 
-Status: Articles + News + Events + Gallery complete
+Status: Articles + News + Events + Gallery + Profile complete
 Last updated: 2026-07-16
 
 ## What's in the database right now
 
-Login/account tables, Articles, News, Events, and Gallery. Other content
-tables (Management Structure, etc.) are deliberately **not** created yet —
-they arrive one at a time in later phases, per the project's "one vertical
-slice at a time" rule. See `docs/FEATURES.md` for the full future table
-list.
+Login/account tables, Articles, News, Events, Gallery, and the site
+Profile (About page content). Other content tables (Management Structure,
+etc.) are deliberately **not** created yet — they arrive one at a time in
+later phases, per the project's "one vertical slice at a time" rule. See
+`docs/FEATURES.md` for the full future table list.
 
 ## Tables (plain-language)
 
@@ -38,6 +38,24 @@ in the admin dashboard, never on public pages.
 These three exist purely to support the login system (Auth.js). You won't
 interact with them directly — they track things like active login sessions
 and password-reset links.
+
+### `site_profile`
+
+A **singleton** table — always exactly one row, with a fixed id
+(`"singleton"`) instead of a generated one. Powers the public "Tentang
+Kami" (About) page:
+
+| Field         | Purpose                                                            |
+| ------------- | ------------------------------------------------------------------ |
+| `description` | Short plain-text summary of the organization.                      |
+| `vision`      | Plain-text vision statement.                                       |
+| `mission`     | Mission statement, written in **Markdown** (e.g. a numbered list). |
+| `values`      | Core values, written in **Markdown** (e.g. a bullet list).         |
+
+Unlike Articles/News/Events/Gallery, this content has no draft/published
+state — whatever is saved here is immediately live on the public page,
+since there's only ever one "About" page, not a list of items to review
+before publishing.
 
 ### `articles`
 

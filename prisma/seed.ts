@@ -174,6 +174,23 @@ async function main() {
     }
   }
   console.log("Seeded gallery photos:", samplePhotos.length);
+
+  const siteProfile = await prisma.siteProfile.upsert({
+    where: { id: "singleton" },
+    update: {},
+    create: {
+      id: "singleton",
+      description:
+        "AKMI Untirta adalah unit kegiatan mahasiswa yang mewadahi aktivitas keagamaan Islam di lingkungan Universitas Sultan Ageng Tirtayasa, dengan fokus pada dakwah kampus, pembinaan mahasiswa Muslim, dan pengembangan potensi diri berlandaskan nilai-nilai Islam.",
+      vision:
+        "Menjadi wadah keislaman mahasiswa yang unggul dalam dakwah, keilmuan, dan pelayanan umat di lingkungan kampus Untirta.",
+      mission:
+        "1. Menyelenggarakan kegiatan dakwah dan kajian keislaman yang mudah diakses seluruh mahasiswa.\n2. Membina kader dakwah kampus yang militan, berakhlak, dan berdaya guna.\n3. Membangun sinergi dengan lembaga kemahasiswaan dan masyarakat kampus lainnya.",
+      values:
+        "- Ukhuwah (persaudaraan)\n- Amanah\n- Militansi dakwah\n- Profesionalisme\n- Pelayanan",
+    },
+  });
+  console.log("Seeded site profile:", siteProfile.id);
 }
 
 main()

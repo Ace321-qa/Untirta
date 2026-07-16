@@ -131,6 +131,23 @@ model Event {
   @@map("events")
 }
 
+// Single-row table: the org profile shown on /tentang (Profil, Visi-Misi,
+// Nilai-nilai). Always read/written via the fixed id "singleton" — see
+// docs/DECISIONS.md for why we didn't build a generic StaticPage system.
+model SiteProfile {
+  id String @id @default("singleton")
+
+  description String @db.Text
+  // Markdown source, rendered safely (no raw HTML) on the public page.
+  vision      String @db.Text
+  mission     String @db.LongText
+  values      String @db.Text
+
+  updatedAt DateTime @updatedAt
+
+  @@map("site_profile")
+}
+
 model GalleryAlbum {
   id          String        @id @default(cuid())
   title       String
