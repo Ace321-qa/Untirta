@@ -4,6 +4,15 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-19 — Laporan (Reports): confirming the "assumption" from Phase 0
+
+- **DECISION (resolving an earlier assumption).** `docs/FEATURES.md` §1 flagged "Laporan" as an assumed meaning — organizational accountability reports (Laporan Pertanggungjawaban / annual reports) published as downloadable documents — and asked for confirmation when this module was built. Built exactly as assumed: a `Report` model with `title`, optional `description`, `year`, an optional `fileUrl`, and DRAFT/PUBLISHED status. If this isn't what "Laporan" was meant to be, the model is simple enough to adjust without much rework.
+- **DECISION.** No individual detail page — same directory-listing pattern as Layanan, since a report is just a title, year, short description, and a download link; nothing that needs its own page/URL. The public `/laporan` page lists published reports ordered newest-year-first with a per-report "Unduh Laporan" button (hidden when no `fileUrl` is set yet).
+- **DECISION.** `fileUrl` is a plain URL, same pattern as every other document/file field in the project (`documentUrl` on Events, `fileUrl` on Books) — no file upload yet, consistent with the project-wide deferral of real media/file storage.
+- Verified end-to-end with a scripted browser test against live MySQL: seeded published reports (2025, 2024) render on `/laporan` in year-descending order with working download buttons → `/dashboard/laporan` requires login → create a draft report (no file) → confirm hidden from the public page → edit it to add a `fileUrl` and publish → confirm it now appears publicly, correctly sorted ahead of older years → confirmed a missing admin report id returns a real 404.
+
+---
+
 ### 2026-07-16 — Jadwal (Schedule): recurring weekly agenda, distinct from Kegiatan
 
 - **DECISION.** `ScheduleItem` models a **recurring weekly** schedule (e.g. "Kajian Tafsir — Senin, 19:00, Masjid Kampus"), not one-off dated events — that's already `Event`'s job. The nav lists "Jadwal" and "Kegiatan" as two separate items, and a weekly kajian timetable is the natural complement to Kegiatan's one-off activities, so `ScheduleItem` has a `dayOfWeek` enum instead of a specific calendar date.

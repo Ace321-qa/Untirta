@@ -280,6 +280,24 @@ model ScheduleItem {
   @@map("schedule_items")
 }
 
+// Organizational accountability reports (Laporan Pertanggungjawaban /
+// annual reports), published as downloadable documents. See
+// docs/FEATURES.md's note on this being an assumption, confirmed as a
+// DECISION when this module was built — see docs/DECISIONS.md.
+model Report {
+  id          String        @id @default(cuid())
+  title       String
+  description String?       @db.Text
+  year        Int
+  fileUrl     String?
+  status      ArticleStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([status, year])
+  @@map("reports")
+}
+
 model GalleryAlbum {
   id          String        @id @default(cuid())
   title       String

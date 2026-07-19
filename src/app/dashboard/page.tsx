@@ -71,6 +71,12 @@ export default async function DashboardPage() {
         >
           Kelola Jadwal
         </Link>
+        <Link
+          href="/dashboard/laporan"
+          className="bg-brand-600 shadow-brand-sm hover:bg-brand-700 w-fit rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-colors"
+        >
+          Kelola Laporan
+        </Link>
       </div>
 
       <form action={logoutAction}>

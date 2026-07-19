@@ -374,6 +374,35 @@ async function main() {
     });
   }
   console.log("Seeded schedule items:", scheduleItems.length);
+
+  const reports = [
+    {
+      id: "report-lpj-2025",
+      title: "Laporan Pertanggungjawaban Tahunan 2025",
+      description:
+        "Laporan pertanggungjawaban kegiatan dan keuangan AKMI Untirta periode 2025.",
+      year: 2025,
+      fileUrl:
+        "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+    },
+    {
+      id: "report-lpj-2024",
+      title: "Laporan Pertanggungjawaban Tahunan 2024",
+      description:
+        "Laporan pertanggungjawaban kegiatan dan keuangan AKMI Untirta periode 2024.",
+      year: 2024,
+      fileUrl:
+        "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+    },
+  ];
+  for (const report of reports) {
+    await prisma.report.upsert({
+      where: { id: report.id },
+      update: {},
+      create: { ...report, status: "PUBLISHED" },
+    });
+  }
+  console.log("Seeded reports:", reports.length);
 }
 
 main()

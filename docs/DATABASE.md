@@ -1,18 +1,19 @@
 # Database — AKMI Untirta Website
 
-Status: Articles + News + Events + Gallery + Profile + Management Structure +
-Perpustakaan + Layanan + Jadwal complete
-Last updated: 2026-07-16
+Status: all original content modules complete (Articles, News, Events,
+Gallery, Profile, Management Structure, Perpustakaan, Layanan, Jadwal,
+Laporan)
+Last updated: 2026-07-19
 
 ## What's in the database right now
 
 Login/account tables, Articles, News, Events, Gallery, the site Profile
 (About page content), Management Structure (Struktur Pengurus),
-Perpustakaan (digital library), Layanan (services directory), and Jadwal
-(recurring weekly schedule). Other content tables (Reports) are
-deliberately **not** created yet — they arrive one at a time in later
-phases, per the project's "one vertical slice at a time" rule. See
-`docs/FEATURES.md` for the full future table list.
+Perpustakaan (digital library), Layanan (services directory), Jadwal
+(recurring weekly schedule), and Laporan (downloadable reports). This
+covers every module in the original navigation. See `docs/FEATURES.md` for
+what's still ahead beyond content modules (contact form, newsletter,
+search, SEO, security hardening, deployment).
 
 ## Tables (plain-language)
 
@@ -198,6 +199,22 @@ their own specific date:
 
 The public page groups items by day (Senin → Minggu) as a list, not a
 month calendar grid — see docs/DECISIONS.md.
+
+### `reports`
+
+Powers the "Laporan" page — organizational accountability reports
+(Laporan Pertanggungjawaban / annual reports) as a simple downloadable
+list:
+
+| Field         | Purpose                                                                   |
+| ------------- | ------------------------------------------------------------------------- |
+| `title`       | Report title (e.g. "Laporan Pertanggungjawaban Tahunan 2025").            |
+| `description` | Optional short description.                                               |
+| `year`        | Used to sort the public list newest-first.                                |
+| `fileUrl`     | Optional PDF URL. Without one, the "Unduh Laporan" button doesn't appear. |
+| `status`      | `DRAFT` (not publicly visible) or `PUBLISHED`.                            |
+
+No individual detail page — same directory-listing pattern as `services`.
 
 ### `gallery_albums`
 
