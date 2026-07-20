@@ -4,6 +4,18 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-20 — Phase 9 security review
+
+- **DECISION.** Upgraded `nodemailer` from 7.0.13 to 9.0.3 — `npm audit` flagged real, high-severity SMTP/header-injection CVEs in the version range this project directly depended on (not a transitive dependency). No API change was needed; `src/lib/email.ts`'s `createTransport`/`sendMail` calls work unchanged.
+- **DECISION.** Added standard security response headers (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, a locked-down `Permissions-Policy`) site-wide via `next.config.ts`'s `headers()`. Did **not** add a Content-Security-Policy — the site intentionally allows featured images/files from any HTTPS host (no upload pipeline yet, per the Articles decision), so a meaningfully strict CSP isn't achievable without that changing first; revisit once real media storage replaces plain URL fields.
+- **DECISION.** Added basic in-memory rate limiting on login (`src/lib/rate-limit.ts`): 5 failed attempts per email within 15 minutes triggers a temporary block, independent of any other email. Chosen over a Redis-backed limiter because the site runs as a single Node.js process on Hostinger — matches the project's existing "no Redis/queues at this scale" decision (`docs/FEATURES.md` §4). Trade-off: counters reset on server restart/deploy, which is acceptable — this defends against naive automated brute-forcing, not a determined attacker who can wait out a restart.
+- **ASSUMPTION.** `npm audit` still reports 6 moderate-severity findings after the nodemailer upgrade — all transitive, none in this project's actual runtime path: (1) PostCSS bundled inside Next.js's own dependency tree (already accepted in the Phase 1 entry above — Next's own suggested fix would downgrade Next.js itself), and (2) `@hono/node-server` bundled inside Prisma's optional local-dev-server tooling (`prisma dev`), which this project never invokes since it connects to a real MySQL server directly. Re-check on the next Next.js/Prisma patch release.
+- **DECISION (scope boundary).** Reviewed every dashboard Server Action — each one independently re-checks `auth()` before mutating data (not just relying on the `/dashboard` layout's page-level redirect), since Server Actions are independently callable endpoints. Confirmed correct across all 12 admin feature areas.
+- **GAP FOUND, NOT FIXED (flagged for a future task, not a security issue).** Articles, News, Events, Layanan, Jadwal, Laporan, and Perpustakaan have no delete action in their admin UI — only Gallery, Struktur Pengurus, Pesan Masuk, and Newsletter do. Content can always be hidden by switching it to `DRAFT`, so this isn't a security hole, just an incompleteness noticed during the review. Worth adding consistently in a follow-up pass.
+- Verified end-to-end with a scripted browser test: 5 failed login attempts for one email show the normal "salah" error, a 6th is correctly blocked with a rate-limit message, a different email is unaffected, a real admin login still succeeds afterward, and all four security headers are present on a live response.
+
+---
+
 ### 2026-07-20 — Search + SEO: sitemap, robots.txt, per-page metadata, global search
 
 - **DECISION.** `NEXT_PUBLIC_SITE_URL` is a new env var (defaults to `http://localhost:3000` if unset) used to build absolute URLs for `sitemap.xml` and Open Graph metadata, since the real domain isn't registered yet (deferred to Phase 10 deployment, per `docs/DECISIONS.md`'s Phase 0 entry). Update it once the domain exists.
