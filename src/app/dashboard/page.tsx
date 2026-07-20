@@ -89,6 +89,12 @@ export default async function DashboardPage() {
         >
           Pelanggan Newsletter
         </Link>
+        <Link
+          href="/dashboard/akun"
+          className="w-fit rounded-lg border border-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+        >
+          Akun Saya
+        </Link>
       </div>
 
       <form action={logoutAction}>

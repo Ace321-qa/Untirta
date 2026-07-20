@@ -147,25 +147,37 @@ in order, with no prompts — exactly what a live server needs.
 
 ---
 
-## 7. Create your real admin account (not the dev one)
+## 7. Create your real admin account and secure it
 
-**Do not reuse the seeded dev admin account or its password.** The seed
-script (`prisma/seed.ts`) creates an account with the email
-`admin@akmiuntirta.test` and the password `ChangeMe123!` — both are
-sitting in plain text in this project's public GitHub repository. If you
-seed production with that as-is, anyone who reads the repo could log into
-your live dashboard.
+Run the seed once to get the initial admin account and the lookup
+categories (article categories, news categories, etc.) that the dashboard
+forms expect to exist:
 
-**Recommended:** tell me your real name, real email address, and I'll
-prepare a small one-off script to create your actual admin account
-directly with a strong, unique password (never reused from anywhere
-else) — then we delete the script. This avoids ever creating the
-insecure default account on production at all.
+```bash
+npm run db:seed
+```
 
-Do **not** run `npm run db:seed` on production as-is — besides the
-insecure admin account, it also fills the site with placeholder sample
-content (a test article, test news item, test event, etc.) that isn't
-real content for your organization.
+This creates a login (`admin@akmiuntirta.test` / `ChangeMe123!`) — but
+that email and password are sitting in plain text in this project's
+public GitHub repository, so **do this immediately, before anyone else
+could possibly find and use the live site**:
+
+1. Log in at `https://yourdomain.com/login` with the seeded credentials.
+2. Go to **Akun Saya** in the dashboard and change the password to
+   something strong and unique — this is a real feature now (see
+   `docs/DECISIONS.md`, 2026-07-20), not a placeholder.
+3. Go through each admin section (Artikel, Berita, Kegiatan, Galeri,
+   Perpustakaan, Layanan, Jadwal, Laporan) and delete the seeded sample
+   placeholder content (a test article, test news item, etc.) using the
+   "Hapus" button next to each row — it isn't real content for your
+   organization.
+4. Go to **Kelola Profil** and replace the placeholder description/
+   vision/mission/values with your organization's real text.
+
+There's currently no way to change the account's _email address_ from the
+dashboard — if you'd like `admin@akmiuntirta.test` changed to your real
+email, tell me and I'll either add that capability or update it directly
+in the database for you.
 
 ---
 

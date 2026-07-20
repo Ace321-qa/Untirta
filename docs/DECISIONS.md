@@ -4,12 +4,20 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-20 — Added a "change my password" dashboard page
+
+- **DECISION.** Added `/dashboard/akun` ("Akun Saya") with a form requiring the current password, a new password (min. 8 characters), and a confirmation — closing the security gap noted below where the only path to an admin account was the seeded dev placeholder with a publicly-known password.
+- **DECISION.** The Server Action re-verifies the current password with `bcrypt.compare` against the logged-in user's own `passwordHash` before allowing a change — it doesn't trust the session alone, since a stale/hijacked session shouldn't be enough on its own to silently take over the account.
+- Verified end-to-end with a scripted browser test: wrong current password is rejected → mismatched new/confirm passwords are rejected → a correct change succeeds → the old password stops working → the new password logs in successfully. The test reverts the password back to the seeded default afterward so the dev environment stays consistent for future test runs.
+
+---
+
 ### 2026-07-20 — Phase 10 deployment prep (docs/DEPLOYMENT.md)
 
 - **DECISION.** Added a step-by-step `docs/DEPLOYMENT.md` guide for deploying to Hostinger's Node.js Web App, since this session can build and push code but cannot access your Hostinger account, buy a domain, or run commands on the production server — those steps genuinely need to happen on your end.
 - **BUG CAUGHT BEFORE DEPLOYMENT (real production blocker, not yet hit).** Auth.js v5 only auto-trusts the request's Host header on Vercel or Cloudflare Pages (confirmed by reading `node_modules/@auth/core`'s own source). On any other host — Hostinger included — login would fail in production with an "UntrustedHost" error unless `AUTH_TRUST_HOST=true` is explicitly set. Documented as a required production env var in `.env.example` and `docs/DEPLOYMENT.md`; not needed locally since development already trusts the host automatically.
 - **DECISION.** Added a separate `db:migrate:deploy` script (`prisma migrate deploy`) for production use, distinct from the existing `db:migrate` (`prisma migrate dev`, interactive, dev-only). Running `migrate dev` against a live production database would be inappropriate — `deploy` just applies already-committed migrations non-interactively.
-- **SECURITY GAP FOUND (flagged, not yet fixed).** There is no way to change a user's password from the dashboard. The only account that exists is the seeded dev admin (`admin@akmiuntirta.test` / `ChangeMe123!`) — both values are in this project's public GitHub repository in plain text. `docs/DEPLOYMENT.md` explicitly warns against running `db:seed` on production as-is, and recommends creating a real admin account directly via a one-off script instead. A proper "change my password" dashboard feature is still recommended before or shortly after launch.
+- **SECURITY GAP FOUND — now closed, see the follow-up entry below.** There was no way to change a user's password from the dashboard, meaning the only account was the seeded dev admin (`admin@akmiuntirta.test` / `ChangeMe123!`), both values sitting in plain text in this project's public GitHub repository.
 - **DECISION.** Production database starts empty — `docs/DEPLOYMENT.md` explicitly tells you not to seed the dev sample content (placeholder article/news/event/etc.) onto the live site.
 
 ---
