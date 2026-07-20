@@ -65,3 +65,21 @@ export async function saveServiceAction(
   revalidatePath("/dashboard/layanan");
   redirect("/dashboard/layanan");
 }
+
+export async function deleteServiceAction(formData: FormData): Promise<void> {
+  const session = await auth();
+  if (!session?.user) {
+    return;
+  }
+
+  const serviceId = formData.get("id");
+  if (typeof serviceId !== "string" || !serviceId) {
+    return;
+  }
+
+  await prisma.service.delete({ where: { id: serviceId } });
+
+  revalidatePath("/");
+  revalidatePath("/layanan");
+  revalidatePath("/dashboard/layanan");
+}

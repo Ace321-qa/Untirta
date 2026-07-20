@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { formatDateTime } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
+import { deleteEventAction } from "./actions";
 
 export default async function DashboardKegiatanPage() {
   const events = await prisma.event.findMany({
@@ -73,12 +74,23 @@ export default async function DashboardKegiatanPage() {
                     {formatDateTime(event.startAt)}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link
-                      href={`/dashboard/kegiatan/${event.id}/edit`}
-                      className="text-brand-700 dark:text-brand-300 font-medium hover:underline"
-                    >
-                      Edit
-                    </Link>
+                    <div className="flex items-center justify-end gap-3">
+                      <Link
+                        href={`/dashboard/kegiatan/${event.id}/edit`}
+                        className="text-brand-700 dark:text-brand-300 font-medium hover:underline"
+                      >
+                        Edit
+                      </Link>
+                      <form action={deleteEventAction}>
+                        <input type="hidden" name="id" value={event.id} />
+                        <button
+                          type="submit"
+                          className="font-medium text-red-600 hover:underline dark:text-red-400"
+                        >
+                          Hapus
+                        </button>
+                      </form>
+                    </div>
                   </td>
                 </tr>
               ))}

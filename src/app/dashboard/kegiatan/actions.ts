@@ -115,3 +115,21 @@ export async function saveEventAction(
   revalidatePath("/dashboard/kegiatan");
   redirect("/dashboard/kegiatan");
 }
+
+export async function deleteEventAction(formData: FormData): Promise<void> {
+  const session = await auth();
+  if (!session?.user) {
+    return;
+  }
+
+  const eventId = formData.get("id");
+  if (typeof eventId !== "string" || !eventId) {
+    return;
+  }
+
+  await prisma.event.delete({ where: { id: eventId } });
+
+  revalidatePath("/");
+  revalidatePath("/kegiatan");
+  revalidatePath("/dashboard/kegiatan");
+}

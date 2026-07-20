@@ -4,6 +4,14 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-20 — Closed the missing-delete gap across 7 admin sections
+
+- **DECISION.** Added a `deleteXAction` (Article, News, Event, Service, ScheduleItem, Report, Book) to each of the 7 admin sections flagged by the Phase 9 security review as missing delete functionality, plus a "Hapus" button next to each row's "Edit" link — matching the exact existing pattern from Gallery/Struktur/Pesan/Newsletter (a plain `<form>` with a hidden id field, no client-side confirm dialog, consistent with how every other delete action in this project already works).
+- **DECISION.** Every new delete action independently re-checks `auth()` before deleting, same as every other Server Action in the project — not just relying on the `/dashboard` layout's page-level redirect.
+- Verified end-to-end: seeded one throwaway `DRAFT` row directly into each of the 7 tables, logged in as admin, clicked "Hapus" on each row via a scripted browser test, confirmed each row disappeared from its admin list, then directly queried MySQL to confirm all 7 rows were actually deleted from the database (not just hidden client-side).
+
+---
+
 ### 2026-07-20 — Phase 9 security review
 
 - **DECISION.** Upgraded `nodemailer` from 7.0.13 to 9.0.3 — `npm audit` flagged real, high-severity SMTP/header-injection CVEs in the version range this project directly depended on (not a transitive dependency). No API change was needed; `src/lib/email.ts`'s `createTransport`/`sendMail` calls work unchanged.
@@ -11,7 +19,7 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 - **DECISION.** Added basic in-memory rate limiting on login (`src/lib/rate-limit.ts`): 5 failed attempts per email within 15 minutes triggers a temporary block, independent of any other email. Chosen over a Redis-backed limiter because the site runs as a single Node.js process on Hostinger — matches the project's existing "no Redis/queues at this scale" decision (`docs/FEATURES.md` §4). Trade-off: counters reset on server restart/deploy, which is acceptable — this defends against naive automated brute-forcing, not a determined attacker who can wait out a restart.
 - **ASSUMPTION.** `npm audit` still reports 6 moderate-severity findings after the nodemailer upgrade — all transitive, none in this project's actual runtime path: (1) PostCSS bundled inside Next.js's own dependency tree (already accepted in the Phase 1 entry above — Next's own suggested fix would downgrade Next.js itself), and (2) `@hono/node-server` bundled inside Prisma's optional local-dev-server tooling (`prisma dev`), which this project never invokes since it connects to a real MySQL server directly. Re-check on the next Next.js/Prisma patch release.
 - **DECISION (scope boundary).** Reviewed every dashboard Server Action — each one independently re-checks `auth()` before mutating data (not just relying on the `/dashboard` layout's page-level redirect), since Server Actions are independently callable endpoints. Confirmed correct across all 12 admin feature areas.
-- **GAP FOUND, NOT FIXED (flagged for a future task, not a security issue).** Articles, News, Events, Layanan, Jadwal, Laporan, and Perpustakaan have no delete action in their admin UI — only Gallery, Struktur Pengurus, Pesan Masuk, and Newsletter do. Content can always be hidden by switching it to `DRAFT`, so this isn't a security hole, just an incompleteness noticed during the review. Worth adding consistently in a follow-up pass.
+- **GAP FOUND** (originally flagged here as not-yet-fixed) **— now closed, see the follow-up entry below.** Articles, News, Events, Layanan, Jadwal, Laporan, and Perpustakaan had no delete action in their admin UI, unlike Gallery, Struktur Pengurus, Pesan Masuk, and Newsletter.
 - Verified end-to-end with a scripted browser test: 5 failed login attempts for one email show the normal "salah" error, a 6th is correctly blocked with a rate-limit message, a different email is unaffected, a real admin login still succeeds afterward, and all four security headers are present on a live response.
 
 ---

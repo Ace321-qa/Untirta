@@ -118,3 +118,21 @@ export async function saveNewsAction(
   revalidatePath("/dashboard/berita");
   redirect("/dashboard/berita");
 }
+
+export async function deleteNewsAction(formData: FormData): Promise<void> {
+  const session = await auth();
+  if (!session?.user) {
+    return;
+  }
+
+  const newsId = formData.get("id");
+  if (typeof newsId !== "string" || !newsId) {
+    return;
+  }
+
+  await prisma.news.delete({ where: { id: newsId } });
+
+  revalidatePath("/");
+  revalidatePath("/berita");
+  revalidatePath("/dashboard/berita");
+}

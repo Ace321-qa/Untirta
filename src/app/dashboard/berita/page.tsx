@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { formatDate } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
+import { deleteNewsAction } from "./actions";
 
 export default async function DashboardBeritaPage() {
   const newsItems = await prisma.news.findMany({
@@ -77,12 +78,23 @@ export default async function DashboardBeritaPage() {
                     {formatDate(news.updatedAt)}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link
-                      href={`/dashboard/berita/${news.id}/edit`}
-                      className="text-brand-700 dark:text-brand-300 font-medium hover:underline"
-                    >
-                      Edit
-                    </Link>
+                    <div className="flex items-center justify-end gap-3">
+                      <Link
+                        href={`/dashboard/berita/${news.id}/edit`}
+                        className="text-brand-700 dark:text-brand-300 font-medium hover:underline"
+                      >
+                        Edit
+                      </Link>
+                      <form action={deleteNewsAction}>
+                        <input type="hidden" name="id" value={news.id} />
+                        <button
+                          type="submit"
+                          className="font-medium text-red-600 hover:underline dark:text-red-400"
+                        >
+                          Hapus
+                        </button>
+                      </form>
+                    </div>
                   </td>
                 </tr>
               ))}

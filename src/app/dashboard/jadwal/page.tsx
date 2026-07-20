@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { prisma } from "@/lib/prisma";
 import { dayOfWeekLabels } from "@/lib/validations/schedule";
+import { deleteScheduleItemAction } from "./actions";
 
 export default async function DashboardJadwalPage() {
   const items = await prisma.scheduleItem.findMany({
@@ -79,12 +80,23 @@ export default async function DashboardJadwalPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link
-                      href={`/dashboard/jadwal/${item.id}/edit`}
-                      className="text-brand-700 dark:text-brand-300 font-medium hover:underline"
-                    >
-                      Edit
-                    </Link>
+                    <div className="flex items-center justify-end gap-3">
+                      <Link
+                        href={`/dashboard/jadwal/${item.id}/edit`}
+                        className="text-brand-700 dark:text-brand-300 font-medium hover:underline"
+                      >
+                        Edit
+                      </Link>
+                      <form action={deleteScheduleItemAction}>
+                        <input type="hidden" name="id" value={item.id} />
+                        <button
+                          type="submit"
+                          className="font-medium text-red-600 hover:underline dark:text-red-400"
+                        >
+                          Hapus
+                        </button>
+                      </form>
+                    </div>
                   </td>
                 </tr>
               ))}

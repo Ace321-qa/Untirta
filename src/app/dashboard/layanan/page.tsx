@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Container } from "@/components/layout/Container";
 import { prisma } from "@/lib/prisma";
+import { deleteServiceAction } from "./actions";
 
 export default async function DashboardLayananPage() {
   const services = await prisma.service.findMany({
@@ -63,12 +64,23 @@ export default async function DashboardLayananPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link
-                      href={`/dashboard/layanan/${service.id}/edit`}
-                      className="text-brand-700 dark:text-brand-300 font-medium hover:underline"
-                    >
-                      Edit
-                    </Link>
+                    <div className="flex items-center justify-end gap-3">
+                      <Link
+                        href={`/dashboard/layanan/${service.id}/edit`}
+                        className="text-brand-700 dark:text-brand-300 font-medium hover:underline"
+                      >
+                        Edit
+                      </Link>
+                      <form action={deleteServiceAction}>
+                        <input type="hidden" name="id" value={service.id} />
+                        <button
+                          type="submit"
+                          className="font-medium text-red-600 hover:underline dark:text-red-400"
+                        >
+                          Hapus
+                        </button>
+                      </form>
+                    </div>
                   </td>
                 </tr>
               ))}

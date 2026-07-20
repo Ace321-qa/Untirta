@@ -64,3 +64,20 @@ export async function saveReportAction(
   revalidatePath("/dashboard/laporan");
   redirect("/dashboard/laporan");
 }
+
+export async function deleteReportAction(formData: FormData): Promise<void> {
+  const session = await auth();
+  if (!session?.user) {
+    return;
+  }
+
+  const reportId = formData.get("id");
+  if (typeof reportId !== "string" || !reportId) {
+    return;
+  }
+
+  await prisma.report.delete({ where: { id: reportId } });
+
+  revalidatePath("/laporan");
+  revalidatePath("/dashboard/laporan");
+}

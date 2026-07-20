@@ -95,3 +95,20 @@ export async function saveBookAction(
   revalidatePath("/dashboard/perpustakaan");
   redirect("/dashboard/perpustakaan");
 }
+
+export async function deleteBookAction(formData: FormData): Promise<void> {
+  const session = await auth();
+  if (!session?.user) {
+    return;
+  }
+
+  const bookId = formData.get("id");
+  if (typeof bookId !== "string" || !bookId) {
+    return;
+  }
+
+  await prisma.book.delete({ where: { id: bookId } });
+
+  revalidatePath("/perpustakaan");
+  revalidatePath("/dashboard/perpustakaan");
+}

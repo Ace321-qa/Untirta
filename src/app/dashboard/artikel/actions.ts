@@ -118,3 +118,21 @@ export async function saveArticleAction(
   revalidatePath("/dashboard/artikel");
   redirect("/dashboard/artikel");
 }
+
+export async function deleteArticleAction(formData: FormData): Promise<void> {
+  const session = await auth();
+  if (!session?.user) {
+    return;
+  }
+
+  const articleId = formData.get("id");
+  if (typeof articleId !== "string" || !articleId) {
+    return;
+  }
+
+  await prisma.article.delete({ where: { id: articleId } });
+
+  revalidatePath("/");
+  revalidatePath("/artikel");
+  revalidatePath("/dashboard/artikel");
+}

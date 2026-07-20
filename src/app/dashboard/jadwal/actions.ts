@@ -82,3 +82,22 @@ export async function saveScheduleItemAction(
   revalidatePath("/dashboard/jadwal");
   redirect("/dashboard/jadwal");
 }
+
+export async function deleteScheduleItemAction(
+  formData: FormData,
+): Promise<void> {
+  const session = await auth();
+  if (!session?.user) {
+    return;
+  }
+
+  const itemId = formData.get("id");
+  if (typeof itemId !== "string" || !itemId) {
+    return;
+  }
+
+  await prisma.scheduleItem.delete({ where: { id: itemId } });
+
+  revalidatePath("/jadwal");
+  revalidatePath("/dashboard/jadwal");
+}
