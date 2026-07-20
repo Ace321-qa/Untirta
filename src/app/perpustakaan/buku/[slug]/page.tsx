@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Container } from "@/components/layout/Container";
+import { toPlainSummary } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 
 async function getBook(slug: string) {
@@ -30,8 +31,17 @@ export async function generateMetadata({
 
   if (!book) return {};
 
+  const description = toPlainSummary(book.description);
+
   return {
     title: `${book.title} — AKMI Untirta`,
+    description,
+    openGraph: {
+      title: book.title,
+      description,
+      images: book.coverImage ? [book.coverImage] : undefined,
+      type: "article",
+    },
   };
 }
 

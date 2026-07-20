@@ -3,7 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { Container } from "@/components/layout/Container";
-import { formatDate } from "@/lib/format";
+import { formatDate, toPlainSummary } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 
 async function getAlbum(slug: string) {
@@ -14,6 +14,7 @@ async function getAlbum(slug: string) {
       description: true,
       eventDate: true,
       videoUrl: true,
+      coverImage: true,
       images: {
         orderBy: { displayOrder: "asc" },
         select: {
@@ -38,8 +39,20 @@ export async function generateMetadata({
 
   if (!album) return {};
 
+  const description = album.description
+    ? toPlainSummary(album.description)
+    : undefined;
+  const image = album.coverImage ?? album.images[0]?.url;
+
   return {
     title: `${album.title} — AKMI Untirta`,
+    description,
+    openGraph: {
+      title: album.title,
+      description,
+      images: image ? [image] : undefined,
+      type: "article",
+    },
   };
 }
 

@@ -4,6 +4,18 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-20 — Search + SEO: sitemap, robots.txt, per-page metadata, global search
+
+- **DECISION.** `NEXT_PUBLIC_SITE_URL` is a new env var (defaults to `http://localhost:3000` if unset) used to build absolute URLs for `sitemap.xml` and Open Graph metadata, since the real domain isn't registered yet (deferred to Phase 10 deployment, per `docs/DECISIONS.md`'s Phase 0 entry). Update it once the domain exists.
+- **DECISION.** `src/app/sitemap.ts` and `src/app/robots.ts` use Next.js's built-in file conventions rather than a hand-written static file — they query Prisma directly for every published Article/News/Event/Book/GalleryAlbum slug, so the sitemap always reflects real published content instead of going stale. `/dashboard` and `/login` are disallowed in `robots.txt` since they're private, not content search engines should index.
+- **DECISION.** Added `openGraph` metadata (title/description/image) to every content detail page (Article, News, Event, Book, Gallery album) so links shared on WhatsApp/Instagram/social media show a proper preview card instead of a generic one. A new `toPlainSummary()` helper in `src/lib/format.ts` strips Markdown syntax and truncates to ~160 characters for pages whose only description field is a long Markdown body (Event, Book, Gallery), since a raw Markdown string with `#`/`*`/links isn't fit for a meta description.
+- **DECISION.** Did **not** add a title template (e.g. Next's `title: { template: "%s — AKMI Untirta" }`) to the root layout — every existing page already hardcodes its own `"— AKMI Untirta"` suffix, so a template would have doubled it up across ~15 files. Simpler to leave the existing per-page convention as-is.
+- **DECISION.** Global search (`/cari`) queries Article/News/Event/Book directly with Prisma's `contains` filter (case-insensitive by MySQL's default collation) rather than a dedicated search engine (Elasticsearch, Algolia) or full-text index — explicitly ruled out as overkill for this scale in `docs/FEATURES.md` §4. Results are grouped by content type, capped at 10 per type, and only ever match `PUBLISHED` items.
+- **DECISION.** The search box is a plain `<form action="/cari" method="get">` — no client-side JavaScript, no debounced fetch. It works via ordinary browser form submission (and thus without JS enabled), matches the project's general preference for simple native HTML over unnecessary client interactivity, and needed no new dependency.
+- Verified end-to-end with a scripted browser test: `/sitemap.xml` returns 200 and includes known routes → `/robots.txt` returns 200 and disallows `/dashboard` → the header search box is visible on the homepage → searching a real seeded term returns grouped results linking to the correct pages → an empty query shows a prompt instead of an error → a nonsense query shows a "no results" message instead of a blank page.
+
+---
+
 ### 2026-07-20 — Newsletter signup: storage only, no sending yet
 
 - **DECISION.** `NewsletterSubscriber` is intentionally minimal — just `email` (unique) and `subscribedAt`. This phase only captures interest; actually composing and sending bulk newsletters is deferred until a provider and consent/unsubscribe flow are chosen (see `docs/FEATURES.md` §6 and `docs/PROJECT-VISION.md` §8). Re-subscribing with an already-known email is a silent no-op (`upsert` with an empty `update`), not an error, since a visitor re-submitting the form isn't doing anything wrong.

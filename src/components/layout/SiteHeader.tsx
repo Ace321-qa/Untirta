@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Menu, Search, X } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
 import { isNavGroup, mainNavigation } from "@/lib/navigation";
@@ -71,6 +71,31 @@ export function SiteHeader() {
           </ul>
         </nav>
 
+        <form
+          action="/cari"
+          method="get"
+          role="search"
+          className="hidden items-center gap-1 md:flex"
+        >
+          <label htmlFor="site-search" className="sr-only">
+            Cari
+          </label>
+          <input
+            id="site-search"
+            name="q"
+            type="search"
+            placeholder="Cari..."
+            className="w-40 rounded-md border border-zinc-300 px-3 py-1.5 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          />
+          <button
+            type="submit"
+            className="hover:bg-brand-50 hover:text-brand-700 dark:hover:bg-brand-950 dark:hover:text-brand-300 rounded-md p-2 text-zinc-700 dark:text-zinc-300"
+          >
+            <span className="sr-only">Cari</span>
+            <Search aria-hidden="true" className="size-4" />
+          </button>
+        </form>
+
         <button
           type="button"
           className="hover:bg-brand-50 hover:text-brand-700 dark:hover:bg-brand-950 dark:hover:text-brand-300 rounded-md p-2 text-zinc-700 md:hidden dark:text-zinc-300"
@@ -96,6 +121,30 @@ export function SiteHeader() {
           className="border-t border-zinc-200 md:hidden dark:border-zinc-800"
         >
           <Container className="flex flex-col gap-1 py-3">
+            <form
+              action="/cari"
+              method="get"
+              role="search"
+              className="flex items-center gap-1 pb-2"
+            >
+              <label htmlFor="site-search-mobile" className="sr-only">
+                Cari
+              </label>
+              <input
+                id="site-search-mobile"
+                name="q"
+                type="search"
+                placeholder="Cari..."
+                className="flex-1 rounded-md border border-zinc-300 px-3 py-1.5 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+              />
+              <button
+                type="submit"
+                className="hover:bg-brand-50 hover:text-brand-700 dark:hover:bg-brand-950 dark:hover:text-brand-300 rounded-md p-2 text-zinc-700 dark:text-zinc-300"
+              >
+                <span className="sr-only">Cari</span>
+                <Search aria-hidden="true" className="size-4" />
+              </button>
+            </form>
             {mainNavigation.map((item) =>
               isNavGroup(item) ? (
                 <details key={item.label} className="group">

@@ -41,6 +41,12 @@ export async function generateMetadata({
   return {
     title: `${news.title} — AKMI Untirta`,
     description: news.excerpt ?? undefined,
+    openGraph: {
+      title: news.title,
+      description: news.excerpt ?? undefined,
+      images: news.featuredImage ? [news.featuredImage] : undefined,
+      type: "article",
+    },
   };
 }
 

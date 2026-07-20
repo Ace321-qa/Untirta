@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { Container } from "@/components/layout/Container";
-import { formatDateTime } from "@/lib/format";
+import { formatDateTime, toPlainSummary } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
 
 async function getEvent(slug: string) {
@@ -38,8 +38,17 @@ export async function generateMetadata({
 
   if (!event) return {};
 
+  const description = toPlainSummary(event.description);
+
   return {
     title: `${event.title} — AKMI Untirta`,
+    description,
+    openGraph: {
+      title: event.title,
+      description,
+      images: event.featuredImage ? [event.featuredImage] : undefined,
+      type: "article",
+    },
   };
 }
 
