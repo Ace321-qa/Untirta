@@ -10,6 +10,7 @@ import { NewsCard } from "@/components/news/NewsCard";
 import { EventCard } from "@/components/events/EventCard";
 import { GalleryCard } from "@/components/gallery/GalleryCard";
 import { ServiceCard } from "@/components/services/ServiceCard";
+import { NewsletterForm } from "@/components/home/NewsletterForm";
 import { siteContact } from "@/lib/navigation";
 import { prisma } from "@/lib/prisma";
 
@@ -216,25 +217,7 @@ export default async function Home() {
         title="Berlangganan Kabar Terbaru"
         description="Dapatkan info kegiatan dan artikel terbaru langsung ke email Anda."
       >
-        <form className="flex max-w-md flex-col gap-2 sm:flex-row">
-          <label htmlFor="newsletter-email" className="sr-only">
-            Alamat email
-          </label>
-          <input
-            id="newsletter-email"
-            type="email"
-            disabled
-            placeholder="Alamat email Anda"
-            className="flex-1 rounded-lg border border-zinc-300 px-4 py-2.5 text-sm text-zinc-500 disabled:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-500"
-          />
-          <button
-            type="button"
-            disabled
-            className="rounded-lg bg-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-600 dark:bg-zinc-700 dark:text-zinc-400"
-          >
-            Segera Hadir
-          </button>
-        </form>
+        <NewsletterForm />
       </Section>
 
       <Section id="kontak-singkat" title="Kontak">

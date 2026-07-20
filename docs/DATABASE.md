@@ -2,7 +2,7 @@
 
 Status: all original content modules complete (Articles, News, Events,
 Gallery, Profile, Management Structure, Perpustakaan, Layanan, Jadwal,
-Laporan) + Contact form
+Laporan) + Contact form + Newsletter signup
 Last updated: 2026-07-20
 
 ## What's in the database right now
@@ -10,11 +10,12 @@ Last updated: 2026-07-20
 Login/account tables, Articles, News, Events, Gallery, the site Profile
 (About page content), Management Structure (Struktur Pengurus),
 Perpustakaan (digital library), Layanan (services directory), Jadwal
-(recurring weekly schedule), Laporan (downloadable reports), and
-ContactMessage (contact form submissions). This covers every module in the
-original navigation, plus the contact form. See `docs/FEATURES.md` for
-what's still ahead (newsletter, search, SEO, security hardening,
-deployment).
+(recurring weekly schedule), Laporan (downloadable reports),
+ContactMessage (contact form submissions), and NewsletterSubscriber
+(homepage newsletter signups). This covers every module in the original
+navigation, plus the contact form and newsletter signup. See
+`docs/FEATURES.md` for what's still ahead (search, SEO, security
+hardening, deployment).
 
 ## Tables (plain-language)
 
@@ -186,6 +187,21 @@ data exists for this table; every row is a real submission.
 This table is always written first when someone submits the form — a
 notification email is attempted afterward, but its success or failure
 doesn't affect whether the message is saved. See docs/DECISIONS.md.
+
+### `newsletter_subscribers`
+
+Email addresses collected from the homepage's "Berlangganan Kabar Terbaru"
+signup box:
+
+| Field          | Purpose                                                   |
+| -------------- | --------------------------------------------------------- |
+| `email`        | Subscriber's address. Unique — re-subscribing is a no-op. |
+| `subscribedAt` | When they signed up.                                      |
+
+Storage only for now — this table just records interest. Actually sending
+bulk newsletters is deferred until a provider and consent/unsubscribe flow
+are chosen. No seed data; every row is a real signup. Protected by the
+same honeypot pattern as the contact form (see docs/DECISIONS.md).
 
 ### `services`
 

@@ -315,6 +315,18 @@ model ContactMessage {
   @@map("contact_messages")
 }
 
+// Storage only for now — actual bulk-sending is deferred until a provider
+// and consent flow are chosen (see docs/FEATURES.md §6 and
+// docs/PROJECT-VISION.md §8). `email` is unique so re-submitting the same
+// address is a harmless no-op, not a duplicate row.
+model NewsletterSubscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+
+  @@map("newsletter_subscribers")
+}
+
 model GalleryAlbum {
   id          String        @id @default(cuid())
   title       String

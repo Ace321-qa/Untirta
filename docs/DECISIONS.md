@@ -4,6 +4,15 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-20 — Newsletter signup: storage only, no sending yet
+
+- **DECISION.** `NewsletterSubscriber` is intentionally minimal — just `email` (unique) and `subscribedAt`. This phase only captures interest; actually composing and sending bulk newsletters is deferred until a provider and consent/unsubscribe flow are chosen (see `docs/FEATURES.md` §6 and `docs/PROJECT-VISION.md` §8). Re-subscribing with an already-known email is a silent no-op (`upsert` with an empty `update`), not an error, since a visitor re-submitting the form isn't doing anything wrong.
+- **DECISION.** Reused the same honeypot pattern as the contact form (hidden `website` field, validation accepts any value, the Server Action silently fake-succeeds if it's filled) — this time written correctly the first time, applying the lesson from the contact form bug below instead of repeating it.
+- **BUG CAUGHT DURING TESTING (test script only, not an app bug):** the first version of the E2E test tried to trigger server-side email validation by changing the email input's `type` attribute from `"email"` to `"text"` via `page.evaluate()`, but React reverted that mutation back to `"email"` on its next render (confirmed via a hydration-mismatch warning). With the input still `type="email"`, the browser's own HTML5 constraint validation silently blocked submission before any server round-trip happened. Fixed by setting the `<form>`'s `noValidate = true` via `page.evaluate()` instead of touching the input's `type` — this disables the browser's native validation without fighting React's rendering, so the test can actually reach and verify the server-side Zod validation.
+- Verified end-to-end with a scripted browser test against live MySQL: subscribing with a new email shows the success message and stores it → re-subscribing with the same email is handled gracefully with no duplicate row → an invalid email is rejected with the server-side "Alamat email tidak valid." message → a honeypot-tripped submission shows the same fake success message but is confirmed absent from the database → `/dashboard/newsletter` requires login → the admin list shows the real subscriber exactly once → deleting a subscriber removes them from the list.
+
+---
+
 ### 2026-07-20 — Contact form: database is the source of truth, email is best-effort
 
 - **DECISION.** Every valid submission is always saved to `contact_messages` first — a notification email is then attempted, but if it fails (or SMTP isn't configured at all, as in this dev environment) the message is still safely stored and visible in the admin inbox. Email delivery is a "nice to have" convenience for the admin, not the mechanism that determines whether a message was received. This matches `docs/PROJECT-VISION.md` §8's plan to use Gmail SMTP via Nodemailer, wrapped in `src/lib/email.ts` so the provider can be swapped later without touching the form's Server Action.
