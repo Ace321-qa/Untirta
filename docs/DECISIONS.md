@@ -4,6 +4,15 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-20 — Contact form: database is the source of truth, email is best-effort
+
+- **DECISION.** Every valid submission is always saved to `contact_messages` first — a notification email is then attempted, but if it fails (or SMTP isn't configured at all, as in this dev environment) the message is still safely stored and visible in the admin inbox. Email delivery is a "nice to have" convenience for the admin, not the mechanism that determines whether a message was received. This matches `docs/PROJECT-VISION.md` §8's plan to use Gmail SMTP via Nodemailer, wrapped in `src/lib/email.ts` so the provider can be swapped later without touching the form's Server Action.
+- **DECISION.** Spam mitigation for now is a **honeypot field** only (a `website` input hidden off-screen via CSS that real visitors never fill in, but simple bots that auto-fill every field will) — not a CAPTCHA or rate limiting, which are explicitly part of the separate Phase 9 security review, not this feature. A honeypot costs nothing (no new dependency, no user friction) and catches the least sophisticated automated spam, which is the most common kind a small org site actually receives.
+- **BUG CAUGHT AND FIXED before reaching the user:** the honeypot field's Zod schema originally used `.max(0)` to mean "must be empty," but that made the _entire form_ fail validation with a generic error whenever a bot filled it in — the honeypot check in the Server Action (`if (website) { return silent success }`) never ran, because validation rejected the submission before reaching it. Fixed by accepting any string for that field in the schema and letting the action decide what a non-empty value means, so a bot's submission now gets the intended silent fake-success response instead of a visible validation error (which would have told a bot its submission was noticed).
+- Verified end-to-end with a scripted browser test against live MySQL: a valid submission is stored and shown in the admin inbox → a too-short message is rejected by server-side validation and never stored → a honeypot-tripped submission shows a fake "success" message to the sender but is confirmed absent from the database → `/dashboard/pesan` requires login → mark-as-read removes the action button and updates the list badge → delete removes the message → a missing message id returns a real 404.
+
+---
+
 ### 2026-07-19 — Laporan (Reports): confirming the "assumption" from Phase 0
 
 - **DECISION (resolving an earlier assumption).** `docs/FEATURES.md` §1 flagged "Laporan" as an assumed meaning — organizational accountability reports (Laporan Pertanggungjawaban / annual reports) published as downloadable documents — and asked for confirmation when this module was built. Built exactly as assumed: a `Report` model with `title`, optional `description`, `year`, an optional `fileUrl`, and DRAFT/PUBLISHED status. If this isn't what "Laporan" was meant to be, the model is simple enough to adjust without much rework.

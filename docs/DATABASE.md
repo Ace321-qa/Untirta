@@ -2,18 +2,19 @@
 
 Status: all original content modules complete (Articles, News, Events,
 Gallery, Profile, Management Structure, Perpustakaan, Layanan, Jadwal,
-Laporan)
-Last updated: 2026-07-19
+Laporan) + Contact form
+Last updated: 2026-07-20
 
 ## What's in the database right now
 
 Login/account tables, Articles, News, Events, Gallery, the site Profile
 (About page content), Management Structure (Struktur Pengurus),
 Perpustakaan (digital library), Layanan (services directory), Jadwal
-(recurring weekly schedule), and Laporan (downloadable reports). This
-covers every module in the original navigation. See `docs/FEATURES.md` for
-what's still ahead beyond content modules (contact form, newsletter,
-search, SEO, security hardening, deployment).
+(recurring weekly schedule), Laporan (downloadable reports), and
+ContactMessage (contact form submissions). This covers every module in the
+original navigation, plus the contact form. See `docs/FEATURES.md` for
+what's still ahead (newsletter, search, SEO, security hardening,
+deployment).
 
 ## Tables (plain-language)
 
@@ -164,6 +165,27 @@ Powers the "Perpustakaan" (digital library) public pages:
 The reader page (`/perpustakaan/buku/[slug]/baca`) shows the PDF using the
 browser's own built-in PDF viewer, not a paid third-party flipbook service —
 see docs/DECISIONS.md for why.
+
+### `contact_messages`
+
+Submissions from the public "Hubungi Kami" contact form:
+
+| Field       | Purpose                                                                                                     |
+| ----------- | ----------------------------------------------------------------------------------------------------------- |
+| `name`      | Sender's name.                                                                                              |
+| `email`     | Sender's email — used as the reply-to address on the notification email.                                    |
+| `subject`   | Optional subject line.                                                                                      |
+| `message`   | The message body.                                                                                           |
+| `isRead`    | Whether an admin has viewed it yet — drives the "Belum dibaca"/"Sudah dibaca" badge in the dashboard inbox. |
+| `createdAt` | When it was submitted.                                                                                      |
+
+**Privacy note:** name, email, and message content are personal data —
+only ever shown in the admin dashboard, never on public pages. No seed
+data exists for this table; every row is a real submission.
+
+This table is always written first when someone submits the form — a
+notification email is attempted afterward, but its success or failure
+doesn't affect whether the message is saved. See docs/DECISIONS.md.
 
 ### `services`
 

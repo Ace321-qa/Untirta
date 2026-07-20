@@ -298,6 +298,23 @@ model Report {
   @@map("reports")
 }
 
+// Submissions from the public "Hubungi Kami" contact form. A notification
+// email is sent on submission (best-effort — see docs/DECISIONS.md), but
+// this table is the source of truth so no message is ever lost if email
+// delivery fails.
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([isRead, createdAt])
+  @@map("contact_messages")
+}
+
 model GalleryAlbum {
   id          String        @id @default(cuid())
   title       String
