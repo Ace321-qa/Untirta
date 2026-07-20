@@ -4,6 +4,16 @@ Every entry below is either a **DECISION** (you explicitly chose it) or an **ASS
 
 ---
 
+### 2026-07-20 — Phase 10 deployment prep (docs/DEPLOYMENT.md)
+
+- **DECISION.** Added a step-by-step `docs/DEPLOYMENT.md` guide for deploying to Hostinger's Node.js Web App, since this session can build and push code but cannot access your Hostinger account, buy a domain, or run commands on the production server — those steps genuinely need to happen on your end.
+- **BUG CAUGHT BEFORE DEPLOYMENT (real production blocker, not yet hit).** Auth.js v5 only auto-trusts the request's Host header on Vercel or Cloudflare Pages (confirmed by reading `node_modules/@auth/core`'s own source). On any other host — Hostinger included — login would fail in production with an "UntrustedHost" error unless `AUTH_TRUST_HOST=true` is explicitly set. Documented as a required production env var in `.env.example` and `docs/DEPLOYMENT.md`; not needed locally since development already trusts the host automatically.
+- **DECISION.** Added a separate `db:migrate:deploy` script (`prisma migrate deploy`) for production use, distinct from the existing `db:migrate` (`prisma migrate dev`, interactive, dev-only). Running `migrate dev` against a live production database would be inappropriate — `deploy` just applies already-committed migrations non-interactively.
+- **SECURITY GAP FOUND (flagged, not yet fixed).** There is no way to change a user's password from the dashboard. The only account that exists is the seeded dev admin (`admin@akmiuntirta.test` / `ChangeMe123!`) — both values are in this project's public GitHub repository in plain text. `docs/DEPLOYMENT.md` explicitly warns against running `db:seed` on production as-is, and recommends creating a real admin account directly via a one-off script instead. A proper "change my password" dashboard feature is still recommended before or shortly after launch.
+- **DECISION.** Production database starts empty — `docs/DEPLOYMENT.md` explicitly tells you not to seed the dev sample content (placeholder article/news/event/etc.) onto the live site.
+
+---
+
 ### 2026-07-20 — Closed the missing-delete gap across 7 admin sections
 
 - **DECISION.** Added a `deleteXAction` (Article, News, Event, Service, ScheduleItem, Report, Book) to each of the 7 admin sections flagged by the Phase 9 security review as missing delete functionality, plus a "Hapus" button next to each row's "Edit" link — matching the exact existing pattern from Gallery/Struktur/Pesan/Newsletter (a plain `<form>` with a hidden id field, no client-side confirm dialog, consistent with how every other delete action in this project already works).
