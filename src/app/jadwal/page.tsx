@@ -4,6 +4,10 @@ import { Container } from "@/components/layout/Container";
 import { prisma } from "@/lib/prisma";
 import { dayOfWeekLabels, dayOfWeekValues } from "@/lib/validations/schedule";
 
+// Prevents build-time prerendering, which would require a database
+// connection during the build step itself (not available on some hosts).
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Jadwal — AKMI Untirta",
   description: "Jadwal kegiatan rutin mingguan AKMI Untirta.",

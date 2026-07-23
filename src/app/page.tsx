@@ -10,6 +10,12 @@ import { NewsCard } from "@/components/news/NewsCard";
 import { EventCard } from "@/components/events/EventCard";
 import { GalleryCard } from "@/components/gallery/GalleryCard";
 import { ServiceCard } from "@/components/services/ServiceCard";
+
+// Prevents build-time prerendering, which would require a database
+// connection during the build step itself (not available on some hosts,
+// e.g. Hostinger's isolated build environment). Rendered per-request
+// instead, which is fine at this scale.
+export const dynamic = "force-dynamic";
 import { NewsletterForm } from "@/components/home/NewsletterForm";
 import { siteContact } from "@/lib/navigation";
 import { prisma } from "@/lib/prisma";

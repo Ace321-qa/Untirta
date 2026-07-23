@@ -4,6 +4,10 @@ import { Container } from "@/components/layout/Container";
 import { EventCard } from "@/components/events/EventCard";
 import { prisma } from "@/lib/prisma";
 
+// Prevents build-time prerendering, which would require a database
+// connection during the build step itself (not available on some hosts).
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Kegiatan — AKMI Untirta",
   description: "Kegiatan mendatang dan yang telah berlalu dari AKMI Untirta.",

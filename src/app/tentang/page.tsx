@@ -6,6 +6,10 @@ import { Container } from "@/components/layout/Container";
 import { ComingSoon } from "@/components/ComingSoon";
 import { prisma } from "@/lib/prisma";
 
+// Prevents build-time prerendering, which would require a database
+// connection during the build step itself (not available on some hosts).
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Tentang Kami — AKMI Untirta",
   description: "Profil, visi, misi, dan nilai-nilai AKMI Untirta.",

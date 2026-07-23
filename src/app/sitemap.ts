@@ -3,6 +3,10 @@ import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { siteUrl } from "@/lib/site";
 
+// Prevents build-time prerendering, which would require a database
+// connection during the build step itself (not available on some hosts).
+export const dynamic = "force-dynamic";
+
 const staticRoutes = [
   "",
   "/artikel",

@@ -4,6 +4,10 @@ import { Container } from "@/components/layout/Container";
 import { GalleryCard } from "@/components/gallery/GalleryCard";
 import { prisma } from "@/lib/prisma";
 
+// Prevents build-time prerendering, which would require a database
+// connection during the build step itself (not available on some hosts).
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Galeri — AKMI Untirta",
   description: "Album foto dan video kegiatan AKMI Untirta.",

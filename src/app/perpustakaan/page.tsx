@@ -4,6 +4,10 @@ import { Container } from "@/components/layout/Container";
 import { BookCard } from "@/components/books/BookCard";
 import { prisma } from "@/lib/prisma";
 
+// Prevents build-time prerendering, which would require a database
+// connection during the build step itself (not available on some hosts).
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Perpustakaan — AKMI Untirta",
   description: "Koleksi buku digital AKMI Untirta.",
